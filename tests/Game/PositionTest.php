@@ -1,7 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Game\Position;
+namespace Game;
+
 use PHPUnit\Framework\TestCase;
 
 final class PositionTest extends TestCase {

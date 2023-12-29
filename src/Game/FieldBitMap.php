@@ -20,7 +20,7 @@ class FieldBitMap {
     }
 
     public function getBitForPosition(Position $position): int {
-        return $position->file * 8 + $position->rank;
+        return $position->rank * 8 + $position->file;
     }
 
     public function add(Position $position): void {
@@ -50,7 +50,7 @@ class FieldBitMap {
 
         for ($i = 0; $i < 64; $i++) {
             if ($this->map & (1 << $i)) {
-                $result[] = new Position(floor($i / 8), $i % 8);
+                $result[] = new Position($i % 8, floor($i / 8));
             }
         }
 
@@ -59,6 +59,18 @@ class FieldBitMap {
 
     public function getMap(): int {
         return $this->map;
+    }
+
+    public function equals(FieldBitMap $map): bool {
+        return $this->map == $map->map;
+    }
+
+    public function visualize(): string {
+        $result = "";
+        for ($rank = 7; $rank >= 0; $rank--) {
+            $result .= strrev(sprintf("\n%08b", ($this->map >> ($rank * 8)) & 0b11111111));
+        }
+        return $result;
     }
 
     public static function full(): FieldBitMap {

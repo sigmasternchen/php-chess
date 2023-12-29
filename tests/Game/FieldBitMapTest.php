@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Game\FieldBitMap;
-use Game\Position;
+namespace Game;
+
 use PHPUnit\Framework\TestCase;
 
 final class FieldBitMapTest extends TestCase {
@@ -32,6 +32,37 @@ final class FieldBitMapTest extends TestCase {
 
         $this->assertFalse($subject->isEmpty());
         $this->assertEquals($positions, $subject->getPositions());
+    }
+
+    public function testVisualize() {
+        $subject = new FieldBitMap([
+            new Position(0, 0),
+            new Position(1, 1),
+            new Position(2,2),
+            new Position(3, 3),
+            new Position(4, 3),
+            new Position(5, 3),
+            new Position(6, 3),
+            new Position(7, 3),
+            new Position(7, 4),
+            new Position(7, 5),
+            new Position(7, 6),
+            new Position(7, 7),
+        ]);
+
+        $result = $subject->visualize();
+        $this->assertEquals(
+            "" .
+            "00000001\n" .
+            "00000001\n" .
+            "00000001\n" .
+            "00000001\n" .
+            "00011111\n" .
+            "00100000\n" .
+            "01000000\n" .
+            "10000000\n",
+            $result,
+        );
     }
 
 }
