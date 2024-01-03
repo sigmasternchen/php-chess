@@ -32,4 +32,8 @@ class King extends Piece {
 
         return $result;
     }
+
+    public function isInCheck(FieldBitMap $captureable): bool {
+        return $captureable->has($this->position);
+    }
 }

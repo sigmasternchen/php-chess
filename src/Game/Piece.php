@@ -25,6 +25,14 @@ abstract class Piece {
         $this->wasMovedLast = true;
     }
 
+    public function getSide(): Side {
+        return $this->side;
+    }
+
+    public function getPosition(): Position {
+        return $this->position;
+    }
+
     abstract public function getName(): string;
     abstract public function getShort(): string;
     abstract public function getMoveCandidateMap(FieldBitMap $occupied, FieldBitMap $captureable, FieldBitMap $threatened): FieldBitMap;
@@ -35,5 +43,7 @@ abstract class Piece {
         return new FieldBitMap([$this->position]);
     }
 
-
+    public function __toString() {
+        return $this->getShort() . $this->getPosition();
+    }
 }

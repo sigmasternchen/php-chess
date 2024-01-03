@@ -29,6 +29,12 @@ class FieldBitMap {
         }
     }
 
+    public function remove(Position $position): void {
+        if ($position->isValid()) {
+            $this->map &= ~(1 << $this->getBitForPosition($position));
+        }
+    }
+
     public function intersect(FieldBitMap $map): FieldBitMap {
         return new FieldBitMap($this->map & $map->map);
     }
