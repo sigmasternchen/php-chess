@@ -9,9 +9,10 @@ abstract class Piece {
     protected bool $wasMovedLast = false;
     protected ?Position $oldPosition = null;
 
-    public function __construct(Position $position, Side $side) {
+    public function __construct(Position $position, Side $side, bool $hasMoved = false) {
         $this->position = $position;
         $this->side = $side;
+        $this->hasMoved = $hasMoved;
     }
 
     public function tick() {
@@ -45,5 +46,45 @@ abstract class Piece {
 
     public function __toString() {
         return $this->getShort() . $this->getPosition();
+    }
+
+    private static function getClassForType(PieceType $type): string {
+        switch ($type) {
+            case PieceType::PAWN:
+                return Pawn::class;
+            case PieceType::BISHOP:
+                return Bishop::class;
+            case PieceType::KNIGHT:
+                return Knight::class;
+            case PieceType::ROOK:
+                return Rook::class;
+            case PieceType::QUEEN:
+                return Queen::class;
+            case PieceType::KING:
+                return King::class;
+        }
+
+        throw new \RuntimeException("unknown piecetype " . $type);
+    }
+
+    public static function ofType(PieceType $type, Position $position, Side $side): Piece {
+        return new (self::getClassForType($type))($position, $side);
+    }
+
+    public function promote(PieceType $type): Piece {
+        $result = self::ofType($type, $this->position, $this->side);
+        $result->hasMoved = $this->hasMoved;
+        $result->wasMovedLast = $this->wasMovedLast;
+        $result->oldPosition = $this->oldPosition;
+        return $result;
+    }
+
+    public function equals(Piece $piece): bool {
+        return get_class($this) == get_class($piece) &&
+            $this->position->equals($piece->position);
+    }
+
+    public function canPromote(Position $position): bool {
+        return false;
     }
 }

@@ -20,4 +20,8 @@ class Position {
     public function __toString(): string {
         return ["a", "b", "c", "d", "e", "f", "g", "h"][$this->file] . ($this->rank + 1);
     }
+
+    public function equals(Position $position): bool {
+        return $this->file == $position->file && $this->rank == $position->rank;
+    }
 }

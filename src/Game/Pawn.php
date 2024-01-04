@@ -68,4 +68,8 @@ class Pawn extends Piece {
 
         return $result;
     }
+
+    public function canPromote(Position $position): bool {
+        return ($this->side == Side::WHITE) ? ($position->rank == 7) : ($position->rank == 0);
+    }
 }

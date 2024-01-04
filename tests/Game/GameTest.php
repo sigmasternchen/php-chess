@@ -6,6 +6,26 @@ use PHPUnit\Framework\TestCase;
 
 final class GameTest extends TestCase {
 
+    protected function assertContainsEqualsOnce(object $needle, array $haystack) {
+        if (!method_exists($needle, "equals")) {
+            $this->assertFalse("equals() missing on needle");
+        }
+
+        $result = false;
+
+        foreach ($haystack as $item) {
+            if ($needle->equals($item)) {
+                if ($result) {
+                    $this->assertFalse("element duplication");
+                } else {
+                    $result = true;
+                }
+            }
+        }
+
+        $this->assertTrue($result, "no such element");
+    }
+
     public function testGameState_illegal_white() {
         $subject = new Game(
             [
@@ -56,5 +76,173 @@ final class GameTest extends TestCase {
         );
 
         $this->assertEquals(GameState::CHECK, $subject->getGameState());
+    }
+
+    public function testLegalMoves_pawnPinnedBecauseOfCheckKingRestrictedByQueenAndPawn() {
+        $subject = new Game(
+            [
+                new King(new Position(7, 6), Side::BLACK),
+                new Queen(new Position(1, 6), Side::BLACK),
+                new Pawn(new Position(2, 6), Side::WHITE),
+                new King(new Position(3, 6), Side::WHITE),
+            ],
+            Side::WHITE
+        );
+
+        $legalMoves = $subject->getLegalMoves();
+
+        $this->assertCount(5, $legalMoves);
+
+        $this->assertContainsEqualsOnce(new Move(
+            new King(new Position(3, 6), Side::WHITE),
+            new Position(3, 7),
+            null, null,
+        ), $legalMoves);
+
+        $this->assertContainsEqualsOnce(new Move(
+            new King(new Position(3, 6), Side::WHITE),
+            new Position(4, 7),
+            null, null,
+        ), $legalMoves);
+
+        $this->assertContainsEqualsOnce(new Move(
+            new King(new Position(3, 6), Side::WHITE),
+            new Position(4, 6),
+            null, null,
+        ), $legalMoves);
+
+        $this->assertContainsEqualsOnce(new Move(
+            new King(new Position(3, 6), Side::WHITE),
+            new Position(4, 5),
+            null, null,
+        ), $legalMoves);
+
+        $this->assertContainsEqualsOnce(new Move(
+            new King(new Position(3, 6), Side::WHITE),
+            new Position(3, 5),
+            null, null,
+        ), $legalMoves);
+    }
+
+    public function testLegalMoves_kingIsBlockedPawnCanPromote() {
+        $subject = new Game(
+            [
+                new King(new Position(0, 0), Side::BLACK),
+                new King(new Position(3, 6), Side::WHITE),
+                new Queen(new Position(1, 2), Side::WHITE),
+                new Pawn(new Position(7, 1), Side::BLACK, true),
+            ],
+            Side::BLACK
+        );
+
+        $legalMoves = $subject->getLegalMoves();
+
+        $this->assertCount(4, $legalMoves);
+
+        $this->assertContainsEqualsOnce(new Move(
+            new Pawn(new Position(7, 1), Side::BLACK),
+            new Position(7, 0),
+            null, PieceType::BISHOP,
+        ), $legalMoves);
+
+        $this->assertContainsEqualsOnce(new Move(
+            new Pawn(new Position(7, 1), Side::BLACK),
+            new Position(7, 0),
+            null, PieceType::KNIGHT,
+        ), $legalMoves);
+
+        $this->assertContainsEqualsOnce(new Move(
+            new Pawn(new Position(7, 1), Side::BLACK),
+            new Position(7, 0),
+            null, PieceType::ROOK,
+        ), $legalMoves);
+
+        $this->assertContainsEqualsOnce(new Move(
+            new Pawn(new Position(7, 1), Side::BLACK),
+            new Position(7, 0),
+            null, PieceType::QUEEN,
+        ), $legalMoves);
+    }
+
+    public function testLegalMoves_kingIsBlockedInitialPawnMove() {
+        $subject = new Game(
+            [
+                new King(new Position(0, 0), Side::BLACK),
+                new King(new Position(3, 6), Side::WHITE),
+                new Queen(new Position(1, 2), Side::WHITE),
+                new Pawn(new Position(1, 6), Side::BLACK),
+            ],
+            Side::BLACK
+        );
+
+        $legalMoves = $subject->getLegalMoves();
+
+        $this->assertCount(2, $legalMoves);
+
+        $this->assertContainsEqualsOnce(new Move(
+            new Pawn(new Position(1, 6), Side::BLACK),
+            new Position(1, 5),
+            null, null,
+        ), $legalMoves);
+
+        $this->assertContainsEqualsOnce(new Move(
+            new Pawn(new Position(1, 6), Side::BLACK),
+            new Position(1, 4),
+            null, null,
+        ), $legalMoves);
+    }
+
+    public function testLegalMoves_kingIsBlockedEnPassant() {
+        $opponentPawn = new Pawn(new Position(3, 1), Side::WHITE);
+        $opponentPawn->move(new Position(3, 3));
+
+        $subject = new Game(
+            [
+                new King(new Position(0, 0), Side::BLACK),
+                new King(new Position(7, 6), Side::WHITE),
+                new Queen(new Position(1, 2), Side::WHITE),
+                $opponentPawn,
+                new Pawn(new Position(4, 3), Side::BLACK, true),
+            ],
+            Side::BLACK
+        );
+
+        $legalMoves = $subject->getLegalMoves();
+
+        $this->assertCount(2, $legalMoves);
+
+        $this->assertContainsEqualsOnce(new Move(
+            new Pawn(new Position(4, 3), Side::BLACK),
+            new Position(4, 2),
+            null, null,
+        ), $legalMoves);
+
+        $this->assertContainsEqualsOnce(new Move(
+            new Pawn(new Position(4, 3), Side::BLACK),
+            new Position(3, 2),
+            $opponentPawn, null,
+        ), $legalMoves);
+    }
+
+    public function testLegalMoves_kingIsInCheckAttackerCanBeTaken() {
+        $subject = new Game(
+            [
+                new King(new Position(0, 0), Side::BLACK),
+                new King(new Position(3, 6), Side::WHITE),
+                new Queen(new Position(1, 1), Side::WHITE),
+                new Queen(new Position(5, 1), Side::BLACK),
+            ],
+            Side::BLACK
+        );
+
+        $legalMoves = $subject->getLegalMoves();
+
+        $this->assertCount(2, $legalMoves);
+
+        $this->assertContainsEqualsOnce(new Move(
+            new King(new Position(0, 0), Side::BLACK),
+            new Position(1, 1),
+            new Queen(new Position(1, 1), Side::WHITE), null,
+        ), $legalMoves);
     }
 }
