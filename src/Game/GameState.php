@@ -11,4 +11,5 @@ enum GameState {
     case THREEFOLD_REPETITION;
     case FIFTY_MOVE_RULE;
     case ILLEGAL;
+    case UNKNOWN_VALID;
 }

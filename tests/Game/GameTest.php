@@ -78,6 +78,62 @@ final class GameTest extends TestCase {
         $this->assertEquals(GameState::CHECK, $subject->getGameState());
     }
 
+    public function testGameState_checkmate_white() {
+        $subject = new Game(
+            [
+                new King(new Position(0, 0), Side::WHITE),
+                new Queen(new Position(1, 1), Side::BLACK),
+                new King(new Position(2, 2), Side::BLACK),
+            ],
+            Side::WHITE
+        );
+
+        $this->assertEquals(GameState::CHECKMATE, $subject->getGameState());
+    }
+
+    public function testGameState_checkmate_black() {
+        $subject = new Game(
+            [
+                new King(new Position(0, 4), Side::BLACK),
+                new Rook(new Position(0, 1), Side::WHITE),
+                new King(new Position(2, 4), Side::WHITE),
+            ],
+            Side::BLACK
+        );
+
+        $this->assertEquals(GameState::CHECKMATE, $subject->getGameState());
+    }
+
+    public function testGameState_stalemate_white() {
+        $subject = new Game(
+            [
+                new King(new Position(4, 3), Side::WHITE),
+                new Pawn(new Position(3, 3), Side::WHITE),
+                new Rook(new Position(2, 3), Side::BLACK),
+                new King(new Position(6, 3), Side::BLACK),
+                new Queen(new Position(7, 4), Side::BLACK),
+                new Knight(new Position(2, 0), Side::BLACK),
+                new Bishop(new Position(3, 1), Side::BLACK),
+            ],
+            Side::WHITE
+        );
+
+        $this->assertEquals(GameState::STALEMATE, $subject->getGameState());
+    }
+
+    public function testGameState_stalemate_black() {
+        $subject = new Game(
+            [
+                new King(new Position(0, 7), Side::BLACK),
+                new Rook(new Position(1, 1), Side::WHITE),
+                new King(new Position(0, 5), Side::WHITE),
+            ],
+            Side::BLACK
+        );
+
+        $this->assertEquals(GameState::STALEMATE, $subject->getGameState());
+    }
+
     public function testLegalMoves_pawnPinnedBecauseOfCheckKingRestrictedByQueenAndPawn() {
         $subject = new Game(
             [

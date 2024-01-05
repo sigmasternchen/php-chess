@@ -9,6 +9,8 @@ class Game {
 
     private Side $current;
 
+    private ?array $moveCache = null;
+
     public function __construct(array $pieces, Side $current) {
         $this->pieces = $pieces;
         $this->current = $current;
@@ -101,13 +103,17 @@ class Game {
 
 
     public function getLegalMoves(): array {
+        if ($this->moveCache) {
+            return $this->moveCache;
+        }
+
         $ownPieces = $this->getPieces($this->current);
         $opponentPieces = $this->getPieces($this->current->getNext());
 
         $occupied = $this->getOccupied($ownPieces);
         $threatened = $this->getThreatened($opponentPieces, $occupied);
 
-        return $this->getLegalMovesCached(
+        $this->moveCache = $this->getLegalMovesParameterized(
             $ownPieces,
             $opponentPieces,
             $occupied,
@@ -115,6 +121,8 @@ class Game {
             $this->getCaptureable($opponentPieces, true),
             $threatened,
         );
+
+        return $this->moveCache;
     }
 
     private function generatePromotionMoves(Move $candidate): array {
@@ -175,10 +183,10 @@ class Game {
 
     private function isMoveLegal(Move $move) {
         $futureGame = $this->apply($move);
-        return $futureGame->getGameState() != GameState::ILLEGAL;
+        return $futureGame->getGameState(true) != GameState::ILLEGAL;
     }
 
-    private function getLegalMovesCached(
+    private function getLegalMovesParameterized(
         array &$ownPieces,
         array &$opponentPieces,
         FieldBitMap $occupied,
@@ -227,17 +235,29 @@ class Game {
         return $game;
     }
 
-    public function getGameState(): GameState {
+    public function getGameState(bool $onlyIsLegal = false): GameState {
         $allOccupied = $this->getAllOccupied();
 
         if ($this->isIllegal($allOccupied)) {
             return GameState::ILLEGAL;
         }
 
-        if ($this->isCheck($allOccupied)) {
-            // TODO: check for checkmate
+        if ($onlyIsLegal) {
+            return GameState::UNKNOWN_VALID;
+        }
 
-            return GameState::CHECK;
+        $legalMoves = $this->getLegalMoves();
+
+        if ($this->isCheck($allOccupied)) {
+            if (!$legalMoves) {
+                return GameState::CHECKMATE;
+            } else {
+                return GameState::CHECK;
+            }
+        }
+
+        if (!$legalMoves) {
+            return GameState::STALEMATE;
         }
 
         return GameState::DEFAULT;
@@ -267,7 +287,8 @@ class Game {
                         $result .= "\033[30m";
                     }
 
-                    $result .= $piece->getShort() . " ";
+                    $short = $piece->getShort();
+                    $result .= ($short ?: "p") . " ";
                 } else {
                     $result .= "  ";
                 }
