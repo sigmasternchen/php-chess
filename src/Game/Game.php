@@ -245,6 +245,48 @@ class Game {
     }
 
     public function visualize(): string {
+        $result = "  ";
 
+        for ($file = 0; $file < 8; $file++) {
+            $result .= chr(ord('A') + $file) . " ";
+        }
+
+        $result .= "\n";
+
+        for ($rank = 7; $rank >= 0; $rank--) {
+            $result .= ($rank + 1) . " ";
+
+            for ($file = 0; $file < 8; $file++) {
+                $color = ($rank % 2) ^ ($file % 2);
+                $result .= "\033[" . ($color ? 47 : 100) . "m";
+
+                $piece = current(array_filter($this->pieces, fn($p) => $p->getPosition()->equals(new Position($rank, $file))));
+                if ($piece) {
+                    if ($piece->getSide() == Side::WHITE) {
+                        $result .= "\033[97m";
+                    } else {
+                        $result .= "\033[30m";
+                    }
+
+                    $result .= $piece->getShort() . " ";
+                } else {
+                    $result .= "  ";
+                }
+
+                $result .= "\033[0m";
+            }
+
+            $result .= " " . ($rank + 1) . "\n";
+        }
+
+        $result .= "  ";
+
+        for ($file = 0; $file < 8; $file++) {
+            $result .= chr(ord('A') + $file) . " ";
+        }
+
+        $result .= "\n";
+
+        return $result;
     }
 }
