@@ -203,7 +203,10 @@ class Game {
     }
 
     public function apply(Move $move): Game {
-        $game = clone $this;
+        $game = new Game(
+            array_map(fn($p) => clone $p, $this->pieces),
+            $this->current,
+        );
 
         if ($move->captures) {
             $game->removePiece($move->captures);
@@ -238,10 +241,6 @@ class Game {
         }
 
         return GameState::DEFAULT;
-    }
-
-    public function __clone(): void {
-        $this->pieces = array_map(fn($p) => clone $p, $this->pieces);
     }
 
     public function visualize(): string {
