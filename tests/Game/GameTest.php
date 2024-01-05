@@ -107,13 +107,13 @@ final class GameTest extends TestCase {
     public function testGameState_stalemate_white() {
         $subject = new Game(
             [
-                new King(new Position(4, 3), Side::WHITE),
+                new King(new Position(3, 4), Side::WHITE),
                 new Pawn(new Position(3, 3), Side::WHITE),
-                new Rook(new Position(2, 3), Side::BLACK),
-                new King(new Position(6, 3), Side::BLACK),
-                new Queen(new Position(7, 4), Side::BLACK),
-                new Knight(new Position(2, 0), Side::BLACK),
-                new Bishop(new Position(3, 1), Side::BLACK),
+                new Rook(new Position(3, 2), Side::BLACK),
+                new King(new Position(3, 6), Side::BLACK),
+                new Queen(new Position(4, 7), Side::BLACK),
+                new Knight(new Position(0, 2), Side::BLACK),
+                new Bishop(new Position(1, 3), Side::BLACK),
             ],
             Side::WHITE
         );
