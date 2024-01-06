@@ -279,7 +279,7 @@ class Game {
                 $color = ($rank % 2) ^ ($file % 2);
                 $result .= "\033[" . ($color ? 47 : 100) . "m";
 
-                $piece = current(array_filter($this->pieces, fn($p) => $p->getPosition()->equals(new Position($rank, $file))));
+                $piece = current(array_filter($this->pieces, fn($p) => $p->getPosition()->equals(new Position($file, $rank))));
                 if ($piece) {
                     if ($piece->getSide() == Side::WHITE) {
                         $result .= "\033[97m";
