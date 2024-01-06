@@ -171,7 +171,7 @@ class Game {
             if ($this->isCapture($target, $captureableForPawn)) {
                 $candidate->captures = $this->findCapturedPiece($piece, $opponentPieces, $target);
             }
-            if ($piece->canPromote($target)) {
+            if ($piece instanceof Pawn && $piece->promotes($target)) {
                 $candidates = array_merge($candidates, $this->generatePromotionMoves($candidate));
             } else {
                 $candidates[] = $candidate;
@@ -216,23 +216,35 @@ class Game {
             $this->current,
         );
 
+        $game->applyInPlace($move);
+
+        return $game;
+    }
+
+    private function tick(): void {
+        foreach ($this->pieces as $piece) {
+            $piece->tick();
+        }
+    }
+
+    public function applyInPlace(Move $move): void {
+        $this->tick();
+
         if ($move->captures) {
-            $game->removePiece($move->captures);
+            $this->removePiece($move->captures);
         }
         if ($move->promoteTo) {
-            $game->removePiece($move->piece);
+            $this->removePiece($move->piece);
 
             $promoted = $move->piece->promote($move->promoteTo);
             $promoted->move($move->target);
-            $game->pieces[] = $promoted;
+            $this->pieces[] = $promoted;
         } else {
-            $piece = $game->findPiece($move->piece);
+            $piece = $this->findPiece($move->piece);
             $piece->move($move->target);
         }
 
-        $game->current = $game->current->getNext();
-
-        return $game;
+        $this->current = $this->current->getNext();
     }
 
     public function getGameState(bool $onlyIsLegal = false): GameState {

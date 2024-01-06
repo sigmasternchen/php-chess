@@ -301,4 +301,103 @@ final class GameTest extends TestCase {
             new Queen(new Position(1, 1), Side::WHITE), null,
         ), $legalMoves);
     }
+
+    public function testLegalMoves_enPassantNotPossibleBecauseMoveInBetween() {
+        $subject = new Game(
+            [
+                new King(new Position(0, 1), Side::BLACK),
+                new King(new Position(0, 7), Side::WHITE),
+                new Queen(new Position(1, 3), Side::WHITE),
+                new Pawn(new Position(5, 1), Side::WHITE),
+                new Pawn(new Position(6, 2), Side::WHITE),
+                new Pawn(new Position(6, 3), Side::BLACK, true),
+            ],
+            Side::WHITE
+        );
+        $subject->applyInPlace(new Move(
+            new Pawn(new Position(5, 1), Side::WHITE),
+            new Position(5, 3)
+        ));
+        $subject->applyInPlace(new Move(
+            new King(new Position(0, 1), Side::BLACK),
+            new Position(0, 0)
+        ));
+        $subject->applyInPlace(new Move(
+            new Queen(new Position(1, 3), Side::WHITE),
+            new Position(1, 4)
+        ));
+
+        $legalMoves = $subject->getLegalMoves();
+
+        $this->assertCount(1, $legalMoves);
+
+        $this->assertContainsEqualsOnce(new Move(
+            new King(new Position(0, 0), Side::BLACK),
+            new Position(0, 1),
+        ), $legalMoves);
+    }
+
+    public function testLegalMoves_enPassantNotPossibleBecausePawnDidntMove2Squares() {
+        $subject = new Game(
+            [
+                new King(new Position(0, 0), Side::BLACK),
+                new King(new Position(0, 7), Side::WHITE),
+                new Queen(new Position(1, 3), Side::WHITE),
+                new Pawn(new Position(5, 1), Side::WHITE),
+                new Pawn(new Position(6, 2), Side::WHITE),
+                new Pawn(new Position(6, 3), Side::BLACK, true),
+            ],
+            Side::WHITE
+        );
+        $subject->applyInPlace(new Move(
+            new Pawn(new Position(5, 1), Side::WHITE),
+            new Position(5, 2)
+        ));
+        $subject->applyInPlace(new Move(
+            new King(new Position(0, 0), Side::BLACK),
+            new Position(0, 1)
+        ));
+        $subject->applyInPlace(new Move(
+            new Pawn(new Position(5, 2), Side::WHITE),
+            new Position(5, 3)
+        ));
+
+        $legalMoves = $subject->getLegalMoves();
+
+        $this->assertCount(1, $legalMoves);
+
+        $this->assertContainsEqualsOnce(new Move(
+            new King(new Position(0, 1), Side::BLACK),
+            new Position(0, 0),
+        ), $legalMoves);
+    }
+
+    public function testLegalMoves_enPassantPossible() {
+        $subject = new Game(
+            [
+                new King(new Position(0, 0), Side::BLACK),
+                new King(new Position(0, 7), Side::WHITE),
+                new Queen(new Position(1, 2), Side::WHITE),
+                new Pawn(new Position(5, 1), Side::WHITE),
+                new Pawn(new Position(6, 2), Side::WHITE),
+                new Pawn(new Position(6, 3), Side::BLACK, true),
+            ],
+            Side::WHITE
+        );
+
+        $subject->applyInPlace(new Move(
+            new Pawn(new Position(5, 1), Side::WHITE),
+            new Position(5, 3)
+        ));
+
+        $legalMoves = $subject->getLegalMoves();
+
+        $this->assertCount(1, $legalMoves);
+
+        $this->assertContainsEqualsOnce(new Move(
+            new Pawn(new Position(6, 3), Side::BLACK),
+            new Position(5, 2),
+            new Pawn(new Position(5, 3), Side::WHITE),
+        ), $legalMoves);
+    }
 }

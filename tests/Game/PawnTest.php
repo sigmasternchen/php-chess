@@ -243,4 +243,37 @@ final class PawnTest extends TestCase {
             ]))
         );
     }
+
+    public function testPromotes_no() {
+        $subject = new Pawn(
+            new Position(3, 4),
+            Side::WHITE,
+        );
+
+        $this->assertFalse(
+            $subject->promotes(new Position(3, 5))
+        );
+    }
+
+    public function testPromotes_white() {
+        $subject = new Pawn(
+            new Position(3, 6),
+            Side::WHITE,
+        );
+
+        $this->assertTrue(
+            $subject->promotes(new Position(3, 7))
+        );
+    }
+
+    public function testPromotes_black() {
+        $subject = new Pawn(
+            new Position(3, 1),
+            Side::BLACK,
+        );
+
+        $this->assertTrue(
+            $subject->promotes(new Position(3, 0))
+        );
+    }
 }
