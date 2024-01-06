@@ -155,6 +155,22 @@ final class PawnTest extends TestCase {
         );
     }
 
+    public function testMoves_bug_captureForwardNotAllowed() {
+        $subject = new Pawn(
+            new Position(4, 3),
+            Side::BLACK,
+            true
+        );
+
+        $result = $subject->getMoveCandidateMap(
+            FieldBitMap::empty(),
+            new FieldBitMap([new Position(4, 2)]),
+            FieldBitMap::empty());
+        $this->assertTrue(
+            $result->isEmpty()
+        );
+    }
+
     public function testCaptureable_default() {
         $subject = new Pawn(
             new Position(3, 4),

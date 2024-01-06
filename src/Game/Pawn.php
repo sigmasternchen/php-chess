@@ -25,10 +25,12 @@ class Pawn extends Piece {
 
         $initial = new Position($file, $rank + 2 * $direction);
 
-        if (!$occupied->has($regular)) {
+        // checking for collisions in the captureable map works because there is always
+        // a pawn before the en passant square.
+        if (!$occupied->has($regular) && !$captureable->has($regular)) {
             $result->add($regular);
 
-            if (!$this->hasMoved && !$occupied->has($initial)) {
+            if (!$this->hasMoved && !$occupied->has($initial) && !$captureable->has($initial)) {
                 $result->add($initial);
             }
         }
