@@ -19,7 +19,15 @@ class Game {
         $this->blackKing = current(array_filter($this->pieces, fn($p) => ($p instanceof King) && $p->getSide() == Side::BLACK));
     }
 
-    private function getPieces(Side $side): array {
+    public function getCurrentSide(): Side {
+        return $this->current;
+    }
+
+    public function getAllPieces(): array {
+        return $this->pieces;
+    }
+
+    public function getPieces(Side $side): array {
         return array_filter($this->pieces, fn($p) => $p->getSide() == $side);
     }
 
@@ -267,18 +275,30 @@ class Game {
     public function applyInPlace(Move $move): void {
         $this->tick();
 
-        if ($move->captures) {
-            $this->removePiece($move->captures);
-        }
-        if ($move->promoteTo) {
-            $this->removePiece($move->piece);
+        if ($move->castleWith) {
+            $king = $this->findPiece($move->piece);
+            $rook = $this->findPiece($move->castleWith);
 
-            $promoted = $move->piece->promote($move->promoteTo);
-            $promoted->move($move->target);
-            $this->pieces[] = $promoted;
+            // move rook first to avoid temporary variable
+            $rook->move(new Position(
+                ($king->getPosition()->file + $move->target->file) / 2,
+                $rook->getPosition()->rank,
+            ));
+            $king->move($move->target);
         } else {
-            $piece = $this->findPiece($move->piece);
-            $piece->move($move->target);
+            if ($move->captures) {
+                $this->removePiece($move->captures);
+            }
+            if ($move->promoteTo) {
+                $this->removePiece($move->piece);
+
+                $promoted = $move->piece->promote($move->promoteTo);
+                $promoted->move($move->target);
+                $this->pieces[] = $promoted;
+            } else {
+                $piece = $this->findPiece($move->piece);
+                $piece->move($move->target);
+            }
         }
 
         $this->current = $this->current->getNext();

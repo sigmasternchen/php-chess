@@ -448,4 +448,38 @@ final class GameTest extends TestCase {
             new Rook(new Position(7, 1), Side::BLACK),
         ), $legalMoves);
     }
+
+    public function testApply_castles() {
+        $subject = new Game(
+            [
+                new King(new Position(0, 7), Side::BLACK),
+                new King(new Position(4, 0), Side::WHITE),
+                new Rook(new Position(7, 0), Side::WHITE),
+            ],
+            Side::WHITE
+        );
+
+        $subject->applyInPlace(new Move(
+            new King(new Position(4, 0), Side::WHITE),
+            new Position(6, 0),
+            null,
+            null,
+            new Rook(new Position(7, 0), Side::WHITE),
+        ));
+
+        $this->assertEquals(Side::BLACK, $subject->getCurrentSide());
+
+        $pieces = $subject->getPieces(Side::WHITE);
+        $this->assertCount(2, $pieces);
+
+        $this->assertContainsEqualsOnce(
+            new King(new Position(6, 0), Side::WHITE),
+            $pieces
+        );
+        $this->assertContainsEqualsOnce(
+            new Rook(new Position(5, 0), Side::WHITE),
+            $pieces
+        );
+
+    }
 }
