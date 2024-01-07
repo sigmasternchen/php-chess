@@ -7,6 +7,15 @@ use PHPUnit\Framework\TestCase;
 
 final class QueenTest extends TestCase {
 
+    public function testType() {
+        $subject = new Queen(
+            new Position(0, 0),
+            Side::WHITE,
+        );
+
+        $this->assertEquals(PieceType::QUEEN, $subject->getType());
+    }
+
     public function testMoves_unobstructed() {
         $subject = new Queen(new Position(
             3, 4

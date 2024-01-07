@@ -4,12 +4,8 @@ namespace Game;
 
 class Rook extends Piece {
 
-    public function getName(): string {
-        return "Rook";
-    }
-
-    public function getShort(): string {
-        return "R";
+    public function getType(): PieceType {
+        return PieceType::ROOK;
     }
 
     public function getMoveCandidateMap(FieldBitMap $occupied, FieldBitMap $captureable, FieldBitMap $threatened): FieldBitMap {

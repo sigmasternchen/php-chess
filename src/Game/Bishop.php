@@ -3,12 +3,8 @@
 namespace Game;
 
 class Bishop extends Piece {
-    public function getName(): string {
-        return "Bishop";
-    }
-
-    public function getShort(): string {
-        return "B";
+    public function getType(): PieceType {
+        return PieceType::BISHOP;
     }
 
     public function getMoveCandidateMap(FieldBitMap $occupied, FieldBitMap $captureable, FieldBitMap $threatened): FieldBitMap {

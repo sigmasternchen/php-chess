@@ -7,6 +7,15 @@ use PHPUnit\Framework\TestCase;
 
 final class BishopTest extends TestCase {
 
+    public function testType() {
+        $subject = new Bishop(
+            new Position(0, 0),
+            Side::WHITE,
+        );
+
+        $this->assertEquals(PieceType::BISHOP, $subject->getType());
+    }
+
     public function testMoves_unobstructed() {
         $subject = new Bishop(new Position(
             3, 4

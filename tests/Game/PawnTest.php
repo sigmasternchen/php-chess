@@ -7,6 +7,15 @@ use PHPUnit\Framework\TestCase;
 
 final class PawnTest extends TestCase {
 
+    public function testType() {
+        $subject = new Pawn(
+            new Position(0, 0),
+            Side::WHITE,
+        );
+
+        $this->assertEquals(PieceType::PAWN, $subject->getType());
+    }
+
     public function testMoves_initialWhiteUnobstructed() {
         $subject = new Pawn(new Position(
             3, 1

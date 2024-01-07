@@ -7,6 +7,15 @@ use PHPUnit\Framework\TestCase;
 
 final class KingTest extends TestCase {
 
+    public function testType() {
+        $subject = new King(
+            new Position(0, 0),
+            Side::WHITE,
+        );
+
+        $this->assertEquals(PieceType::KING, $subject->getType());
+    }
+
     public function testMoves_unobstructed() {
         $subject = new King(new Position(
             3, 4

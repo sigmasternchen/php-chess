@@ -27,7 +27,7 @@ class Move {
 
     public function __toString(): string {
         return $this->piece . " " .
-            $this->piece->getShort() . ($this->captures ? "x" : "") . $this->target .
+            $this->piece->getType()->getShort() . ($this->captures ? "x" : "") . $this->target .
             ($this->promoteTo ? $this->promoteTo->getShort() : "");
     }
 }

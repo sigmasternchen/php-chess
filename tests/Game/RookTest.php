@@ -7,6 +7,15 @@ use PHPUnit\Framework\TestCase;
 
 final class RookTest extends TestCase {
 
+    public function testType() {
+        $subject = new Rook(
+            new Position(0, 0),
+            Side::WHITE,
+        );
+
+        $this->assertEquals(PieceType::ROOK, $subject->getType());
+    }
+
     public function testMoves_unobstructed() {
         $subject = new Rook(new Position(
             3, 4

@@ -299,7 +299,7 @@ class Game {
                         $result .= "\033[30m";
                     }
 
-                    $short = $piece->getShort();
+                    $short = $piece->getType()->getShort();
                     $result .= ($short ?: "p") . " ";
                 } else {
                     $result .= "  ";

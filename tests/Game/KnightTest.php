@@ -7,6 +7,15 @@ use PHPUnit\Framework\TestCase;
 
 final class KnightTest extends TestCase {
 
+    public function testType() {
+        $subject = new Knight(
+            new Position(0, 0),
+            Side::WHITE,
+        );
+
+        $this->assertEquals(PieceType::KNIGHT, $subject->getType());
+    }
+
     public function testMoves_unobstructed() {
         $subject = new Knight(new Position(
             3, 4

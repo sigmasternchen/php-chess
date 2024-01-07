@@ -24,4 +24,15 @@ enum PieceType {
             self::KING => "K",
         };
     }
+
+    public function getLong(): string {
+        return match ($this) {
+            self::PAWN => "Pawn",
+            self::BISHOP => "Bishop",
+            self::KNIGHT => "Knight",
+            self::ROOK => "Rook",
+            self::QUEEN => "Queen",
+            self::KING => "King",
+        };
+    }
 }

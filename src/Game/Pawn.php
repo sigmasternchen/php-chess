@@ -3,12 +3,9 @@
 namespace Game;
 
 class Pawn extends Piece {
-    public function getName(): string {
-        return "Pawn";
-    }
 
-    public function getShort(): string {
-        return "";
+    public function getType(): PieceType {
+        return PieceType::PAWN;
     }
 
     public function getMoveCandidateMap(FieldBitMap $occupied, FieldBitMap $captureable, FieldBitMap $threatened): FieldBitMap {

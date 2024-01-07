@@ -34,8 +34,7 @@ abstract class Piece {
         return $this->position;
     }
 
-    abstract public function getName(): string;
-    abstract public function getShort(): string;
+    abstract public function getType(): PieceType;
     abstract public function getMoveCandidateMap(FieldBitMap $occupied, FieldBitMap $captureable, FieldBitMap $threatened): FieldBitMap;
     public function getCaptureMap(FieldBitMap $occupied): FieldBitMap {
         return $this->getMoveCandidateMap($occupied, FieldBitMap::empty(), FieldBitMap::empty());
@@ -45,7 +44,7 @@ abstract class Piece {
     }
 
     public function __toString() {
-        return $this->getShort() . $this->getPosition();
+        return $this->getType()->getShort() . $this->getPosition();
     }
 
     private static function getClassForType(PieceType $type): string {
@@ -64,7 +63,7 @@ abstract class Piece {
                 return King::class;
         }
 
-        throw new \RuntimeException("unknown piecetype " . $type);
+        throw new \RuntimeException("unknown piecetype " . $type->getLong());
     }
 
     public static function ofType(PieceType $type, Position $position, Side $side): Piece {
@@ -82,9 +81,5 @@ abstract class Piece {
     public function equals(Piece $piece): bool {
         return get_class($this) == get_class($piece) &&
             $this->position->equals($piece->position);
-    }
-
-    public function canPromote(Position $position): bool {
-        return false;
     }
 }

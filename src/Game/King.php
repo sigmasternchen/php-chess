@@ -4,12 +4,8 @@ namespace Game;
 
 class King extends Piece {
 
-    public function getName(): string {
-        return "King";
-    }
-
-    public function getShort(): string {
-        return "K";
+    public function getType(): PieceType {
+        return PieceType::KING;
     }
 
     public function getMoveCandidateMap(FieldBitMap $occupied, FieldBitMap $captureable, FieldBitMap $threatened): FieldBitMap {
