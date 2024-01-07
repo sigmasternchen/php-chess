@@ -13,6 +13,9 @@ class Game {
 
     private ?array $moveCache = null;
 
+    private int $movesSinceLastCapture = 0;
+    private int $movesSinceLastPawnMove = 0;
+
     public function __construct(array $pieces, Side $current) {
         $this->pieces = $pieces;
         $this->current = $current;
@@ -281,6 +284,9 @@ class Game {
     public function applyInPlace(Move $move): void {
         $this->tick();
 
+        $this->movesSinceLastPawnMove++;
+        $this->movesSinceLastCapture++;
+
         if ($move->castleWith) {
             $king = $this->findPiece($move->piece);
             $rook = $this->findPiece($move->castleWith);
@@ -294,7 +300,12 @@ class Game {
         } else {
             if ($move->captures) {
                 $this->removePiece($move->captures);
+                $this->movesSinceLastCapture = 0;
             }
+            if ($move->piece instanceof Pawn) {
+                $this->movesSinceLastPawnMove = 0;
+            }
+
             if ($move->promoteTo) {
                 $this->removePiece($move->piece);
 
@@ -352,6 +363,15 @@ class Game {
             }
     }
 
+    public function _testFiftyMoveRule(int $movesSinceLastCapture, int $movesSinceLastPawnMove) {
+        $this->movesSinceLastPawnMove = $movesSinceLastPawnMove;
+        $this->movesSinceLastCapture = $movesSinceLastCapture;
+    }
+
+    private function isFiftyMoveRule(): bool {
+        return $this->movesSinceLastCapture >= 50 && $this->movesSinceLastPawnMove >= 50;
+    }
+
     public function getGameState(bool $onlyIsLegal = false): GameState {
         $allOccupied = $this->getAllOccupied();
 
@@ -369,6 +389,10 @@ class Game {
 
         if ($this->isDeadPosition()) {
             return GameState::DEAD_POSITION;
+        }
+
+        if ($this->isFiftyMoveRule()) {
+            return GameState::FIFTY_MOVE_RULE;
         }
 
         $legalMoves = $this->getLegalMoves();

@@ -351,6 +351,118 @@ final class GameTest extends TestCase {
         $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
     }
 
+    public function testGameState_fiftyMoveRule() {
+        $subject = new Game(
+            [
+                new King(new Position(2, 7), Side::WHITE, true),
+                new King(new Position(0, 0), Side::BLACK, true),
+                new Rook(new Position(1, 0), Side::BLACK),
+            ],
+            Side::BLACK
+        );
+        $subject->_testFiftyMoveRule(49, 49);
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+
+        $subject->applyInPlace(new Move(
+            new Rook(new Position(1, 0), Side::BLACK),
+            new Position(3, 0)
+        ));
+
+        echo $subject->visualize();
+
+        $this->assertEquals(GameState::FIFTY_MOVE_RULE, $subject->getGameState());
+    }
+
+    public function testGameState_fiftyMoveRule_notLongEnoughSincePawnMove() {
+        $subject = new Game(
+            [
+                new King(new Position(2, 7), Side::WHITE, true),
+                new King(new Position(0, 0), Side::BLACK, true),
+                new Rook(new Position(1, 0), Side::BLACK),
+            ],
+            Side::BLACK
+        );
+        $subject->_testFiftyMoveRule(49, 48);
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+
+        $subject->applyInPlace(new Move(
+            new Rook(new Position(1, 0), Side::BLACK),
+            new Position(3, 0)
+        ));
+
+        echo $subject->visualize();
+
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+    }
+
+    public function testGameState_fiftyMoveRule_notLongEnoughSinceCapture() {
+        $subject = new Game(
+            [
+                new King(new Position(2, 7), Side::WHITE, true),
+                new King(new Position(0, 0), Side::BLACK, true),
+                new Rook(new Position(1, 0), Side::BLACK),
+            ],
+            Side::BLACK
+        );
+        $subject->_testFiftyMoveRule(48, 49);
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+
+        $subject->applyInPlace(new Move(
+            new Rook(new Position(1, 0), Side::BLACK),
+            new Position(3, 0)
+        ));
+
+        echo $subject->visualize();
+
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+    }
+
+    public function testGameState_fiftyMoveRule_capture() {
+        $subject = new Game(
+            [
+                new King(new Position(2, 7), Side::WHITE, true),
+                new King(new Position(0, 0), Side::BLACK, true),
+                new Rook(new Position(1, 0), Side::BLACK),
+                new Bishop(new Position(3, 0), Side::WHITE),
+            ],
+            Side::BLACK
+        );
+        $subject->_testFiftyMoveRule(49, 49);
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+
+        $subject->applyInPlace(new Move(
+            new Rook(new Position(1, 0), Side::BLACK),
+            new Position(3, 0),
+            new Bishop(new Position(3, 0), Side::WHITE)
+        ));
+
+        echo $subject->visualize();
+
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+    }
+
+    public function testGameState_fiftyMoveRule_pawnMove() {
+        $subject = new Game(
+            [
+                new King(new Position(2, 7), Side::WHITE, true),
+                new King(new Position(0, 0), Side::BLACK, true),
+                new Pawn(new Position(6, 5), Side::BLACK, true)
+            ],
+            Side::BLACK
+        );
+        $subject->_testFiftyMoveRule(49, 49);
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+
+        $subject->applyInPlace(new Move(
+            new Pawn(new Position(6, 5), Side::BLACK),
+            new Position(6, 4),
+        ));
+
+        echo $subject->visualize();
+
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+    }
+
     public function testLegalMoves_pawnPinnedBecauseOfCheckKingRestrictedByQueenAndPawn() {
         $subject = new Game(
             [
