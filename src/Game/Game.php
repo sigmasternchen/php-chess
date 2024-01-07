@@ -434,4 +434,42 @@ class Game {
 
         return $result;
     }
+
+    public static function fromStartPosition(): Game {
+        return new Game([
+            new Pawn(new Position(0, 1), Side::WHITE),
+            new Pawn(new Position(1, 1), Side::WHITE),
+            new Pawn(new Position(2, 1), Side::WHITE),
+            new Pawn(new Position(3, 1), Side::WHITE),
+            new Pawn(new Position(4, 1), Side::WHITE),
+            new Pawn(new Position(5, 1), Side::WHITE),
+            new Pawn(new Position(6, 1), Side::WHITE),
+            new Pawn(new Position(7, 1), Side::WHITE),
+            new Rook(new Position(0, 0), Side::WHITE),
+            new Knight(new Position(1, 0), Side::WHITE),
+            new Bishop(new Position(2, 0), Side::WHITE),
+            new Queen(new Position(3, 0), Side::WHITE),
+            new King(new Position(4, 0), Side::WHITE),
+            new Bishop(new Position(5, 0), Side::WHITE),
+            new Knight(new Position(6, 0), Side::WHITE),
+            new Rook(new Position(7, 0), Side::WHITE),
+
+            new Pawn(new Position(0, 6), Side::BLACK),
+            new Pawn(new Position(1, 6), Side::BLACK),
+            new Pawn(new Position(2, 6), Side::BLACK),
+            new Pawn(new Position(3, 6), Side::BLACK),
+            new Pawn(new Position(4, 6), Side::BLACK),
+            new Pawn(new Position(5, 6), Side::BLACK),
+            new Pawn(new Position(6, 6), Side::BLACK),
+            new Pawn(new Position(7, 6), Side::BLACK),
+            new Rook(new Position(0, 7), Side::BLACK),
+            new Knight(new Position(1, 7), Side::BLACK),
+            new Bishop(new Position(2, 7), Side::BLACK),
+            new Queen(new Position(3, 7), Side::BLACK),
+            new King(new Position(4, 7), Side::BLACK),
+            new Bishop(new Position(5, 7), Side::BLACK),
+            new Knight(new Position(6, 7), Side::BLACK),
+            new Rook(new Position(7, 7), Side::BLACK),
+        ], Side::WHITE);
+    }
 }

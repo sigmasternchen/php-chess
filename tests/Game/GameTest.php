@@ -632,8 +632,6 @@ final class GameTest extends TestCase {
 
         $legalMoves = $subject->getLegalMoves();
 
-        echo join("\n", $legalMoves);
-
         $this->assertCount(5, $legalMoves);
 
         $this->assertContainsEqualsOnce(new Move(
@@ -697,6 +695,72 @@ final class GameTest extends TestCase {
             new Rook(new Position(5, 0), Side::WHITE),
             $pieces
         );
+    }
 
+    public function testStartPosition() {
+        $subject = Game::fromStartPosition();
+
+        echo $subject->visualize();
+
+        $pieces = $subject->getAllPieces();
+        $this->assertCount(32, $pieces);
+
+        $whitePawns = array_values(array_filter($pieces, fn($p) => $p instanceof Pawn && $p->getSide() == Side::WHITE));
+        $blackPawns = array_values(array_filter($pieces, fn($p) => $p instanceof Pawn && $p->getSide() == Side::BLACK));
+        $whiteNonPawns = array_values(array_filter($pieces, fn($p) => !($p instanceof Pawn) && $p->getSide() == Side::WHITE));
+        $blackNonPawns = array_values(array_filter($pieces, fn($p) => !($p instanceof Pawn) && $p->getSide() == Side::BLACK));
+        $kings = array_values(array_filter($pieces, fn($p) => $p instanceof King));
+        $queens = array_values(array_filter($pieces, fn($p) => $p instanceof Queen));
+        $rooks = array_values(array_filter($pieces, fn($p) => $p instanceof Rook));
+        $knights = array_values(array_filter($pieces, fn($p) => $p instanceof Knight));
+        $bishops = array_values(array_filter($pieces, fn($p) => $p instanceof Bishop));
+
+        $this->assertCount(8, $whitePawns);
+        $this->assertCount(8, $blackPawns);
+        $this->assertCount(8, $whiteNonPawns);
+        $this->assertCount(8, $blackNonPawns);
+        $this->assertCount(2, $kings);
+        $this->assertCount(2, $queens);
+        $this->assertCount(4, $rooks);
+        $this->assertCount(4, $knights);
+        $this->assertCount(4, $bishops);
+
+        $this->assertEquals(
+            array_fill(0, 8, 1),
+            array_map(fn($p) => $p->getPosition()->rank, $whitePawns),
+        );
+        $this->assertEquals(
+            array_fill(0, 8, 0),
+            array_map(fn($p) => $p->getPosition()->rank, $whiteNonPawns),
+        );
+        $this->assertEquals(
+            array_fill(0, 8, 6),
+            array_map(fn($p) => $p->getPosition()->rank, $blackPawns),
+        );
+        $this->assertEquals(
+            array_fill(0, 8, 7),
+            array_map(fn($p) => $p->getPosition()->rank, $blackNonPawns),
+        );
+
+        $this->assertEquals(
+            array_fill(0, 4, 0),
+            array_map(fn($p) => min($p->getPosition()->file, 7 - $p->getPosition()->file), $rooks),
+        );
+        $this->assertEquals(
+            array_fill(0, 4, 1),
+            array_map(fn($p) => min($p->getPosition()->file, 7 - $p->getPosition()->file), $knights),
+        );
+        $this->assertEquals(
+            array_fill(0, 4, 2),
+            array_map(fn($p) => min($p->getPosition()->file, 7 - $p->getPosition()->file), $bishops),
+        );
+        $this->assertEquals(
+            array_fill(0, 2, 3),
+            array_map(fn($p) => $p->getPosition()->file, $queens),
+        );
+        $this->assertEquals(
+            array_fill(0, 2, 4),
+            array_map(fn($p) => $p->getPosition()->file, $kings),
+        );
     }
 }
