@@ -134,6 +134,129 @@ final class GameTest extends TestCase {
         $this->assertEquals(GameState::STALEMATE, $subject->getGameState());
     }
 
+
+    public function testGameState_threeFoldRepetition_black() {
+        $subject = new Game(
+            [
+                new King(new Position(1, 1), Side::BLACK, true),
+                new King(new Position(7, 6), Side::WHITE, true),
+            ],
+            Side::BLACK
+        );
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+
+        $subject->applyInPlace(new Move(
+            new King(new Position(1, 1), Side::BLACK),
+            new Position(1, 2),
+        ));
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+
+        $subject->applyInPlace(new Move(
+            new King(new Position(7, 6), Side::WHITE),
+            new Position(7, 7),
+        ));
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+
+        $subject->applyInPlace(new Move(
+            new King(new Position(1, 2), Side::BLACK),
+            new Position(1, 1),
+        ));
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+
+        $subject->applyInPlace(new Move(
+            new King(new Position(7, 7), Side::WHITE),
+            new Position(7, 6),
+        ));
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+
+        $subject->applyInPlace(new Move(
+            new King(new Position(1, 1), Side::BLACK),
+            new Position(1, 2),
+        ));
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+
+        $subject->applyInPlace(new Move(
+            new King(new Position(7, 6), Side::WHITE),
+            new Position(7, 7),
+        ));
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+
+        $subject->applyInPlace(new Move(
+            new King(new Position(1, 2), Side::BLACK),
+            new Position(1, 1),
+        ));
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+
+        $subject->applyInPlace(new Move(
+            new King(new Position(7, 7), Side::WHITE),
+            new Position(7, 6),
+        ));
+
+        $this->assertEquals(GameState::THREEFOLD_REPETITION, $subject->getGameState());
+    }
+
+
+    public function testGameState_noThreeFoldRepetitionWithCastlingRights_black() {
+        $subject = new Game(
+            [
+                new King(new Position(4, 7), Side::BLACK, false),
+                new Rook(new Position(0, 7), Side::BLACK, false),
+                new King(new Position(7, 6), Side::WHITE, true),
+            ],
+            Side::BLACK
+        );
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+
+        $subject->applyInPlace(new Move(
+            new King(new Position(4, 7), Side::BLACK),
+            new Position(3, 7),
+        ));
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+
+        $subject->applyInPlace(new Move(
+            new King(new Position(7, 6), Side::WHITE),
+            new Position(7, 7),
+        ));
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+
+        $subject->applyInPlace(new Move(
+            new King(new Position(3, 7), Side::BLACK),
+            new Position(4, 7),
+        ));
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+
+        $subject->applyInPlace(new Move(
+            new King(new Position(7, 7), Side::WHITE),
+            new Position(7, 6),
+        ));
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+
+        $subject->applyInPlace(new Move(
+            new King(new Position(4, 7), Side::BLACK),
+            new Position(3, 7),
+        ));
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+
+        $subject->applyInPlace(new Move(
+            new King(new Position(7, 6), Side::WHITE),
+            new Position(7, 7),
+        ));
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+
+        $subject->applyInPlace(new Move(
+            new King(new Position(3, 7), Side::BLACK),
+            new Position(4, 7),
+        ));
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+
+        $subject->applyInPlace(new Move(
+            new King(new Position(7, 7), Side::WHITE),
+            new Position(7, 6),
+        ));
+
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+    }
+
     public function testLegalMoves_pawnPinnedBecauseOfCheckKingRestrictedByQueenAndPawn() {
         $subject = new Game(
             [

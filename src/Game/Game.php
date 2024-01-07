@@ -9,6 +9,8 @@ class Game {
 
     private Side $current;
 
+    private GameHistory $history;
+
     private ?array $moveCache = null;
 
     public function __construct(array $pieces, Side $current) {
@@ -17,6 +19,9 @@ class Game {
 
         $this->whiteKing = current(array_filter($this->pieces, fn($p) => ($p instanceof King) && $p->getSide() == Side::WHITE));
         $this->blackKing = current(array_filter($this->pieces, fn($p) => ($p instanceof King) && $p->getSide() == Side::BLACK));
+
+        $this->history = new GameHistory();
+        $this->history->add($this);
     }
 
     public function getCurrentSide(): Side {
@@ -47,7 +52,7 @@ class Game {
         );
     }
 
-    private function getKing(Side $side): King {
+    public function getKing(Side $side): King {
         if ($side == Side::WHITE) {
             return $this->whiteKing;
         } else {
@@ -260,6 +265,7 @@ class Game {
             array_map(fn($p) => clone $p, $this->pieces),
             $this->current,
         );
+        $game->history = clone $game->history;
 
         $game->applyInPlace($move);
 
@@ -302,6 +308,8 @@ class Game {
         }
 
         $this->current = $this->current->getNext();
+
+        $this->history->add($this);
     }
 
     public function getGameState(bool $onlyIsLegal = false): GameState {
@@ -313,6 +321,10 @@ class Game {
 
         if ($onlyIsLegal) {
             return GameState::UNKNOWN_VALID;
+        }
+
+        if ($this->history->count($this) >= 3) {
+            return GameState::THREEFOLD_REPETITION;
         }
 
         $legalMoves = $this->getLegalMoves();
