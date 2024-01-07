@@ -99,4 +99,424 @@ final class KingTest extends TestCase {
             ]))
         );
     }
+
+    public function testCanCastle_long() {
+        $king = new King(
+            new Position(4, 0),
+            Side::WHITE
+        );
+
+        $rook = new Rook(
+            new Position(0, 0),
+            Side::WHITE,
+        );
+
+        $maximumOccupiedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(1, 0),
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+        $maximumThreatenedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+
+        $this->assertTrue($king->canCastle(
+            $maximumOccupiedMap,
+            $maximumOccupiedMap,
+            $maximumThreatenedMap,
+            $rook,
+        ));
+    }
+
+    public function testCanCastle_short() {
+        $king = new King(
+            new Position(4, 0),
+            Side::WHITE
+        );
+
+        $rook = new Rook(
+            new Position(7, 0),
+            Side::WHITE,
+        );
+
+        $maximumMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(6, 0),
+                new Position(5, 0),
+            ]))->invert());
+
+        $this->assertTrue($king->canCastle(
+            $maximumMap,
+            $maximumMap,
+            $maximumMap,
+            $rook,
+        ));
+    }
+
+    public function testCanCastle_long_occupied1() {
+        $king = new King(
+            new Position(4, 0),
+            Side::WHITE
+        );
+
+        $rook = new Rook(
+            new Position(0, 0),
+            Side::WHITE,
+        );
+
+        $maximumOccupiedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+        $maximumCaptureableMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(1, 0),
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+        $maximumThreatenedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+
+        $this->assertFalse($king->canCastle(
+            $maximumOccupiedMap,
+            $maximumCaptureableMap,
+            $maximumThreatenedMap,
+            $rook,
+        ));
+    }
+    public function testCanCastle_long_occupied2() {
+        $king = new King(
+            new Position(4, 0),
+            Side::WHITE
+        );
+
+        $rook = new Rook(
+            new Position(0, 0),
+            Side::WHITE,
+        );
+
+        $maximumOccupiedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(1, 0),
+                new Position(3, 0),
+            ]))->invert());
+        $maximumCaptureableMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(1, 0),
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+        $maximumThreatenedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+
+        $this->assertFalse($king->canCastle(
+            $maximumOccupiedMap,
+            $maximumCaptureableMap,
+            $maximumThreatenedMap,
+            $rook,
+        ));
+    }
+
+    public function testCanCastle_long_occupied3() {
+        $king = new King(
+            new Position(4, 0),
+            Side::WHITE
+        );
+
+        $rook = new Rook(
+            new Position(0, 0),
+            Side::WHITE,
+        );
+
+        $maximumOccupiedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(1, 0),
+                new Position(2, 0),
+            ]))->invert());
+        $maximumCaptureableMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(1, 0),
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+        $maximumThreatenedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+
+        $this->assertFalse($king->canCastle(
+            $maximumOccupiedMap,
+            $maximumCaptureableMap,
+            $maximumThreatenedMap,
+            $rook,
+        ));
+    }
+
+    public function testCanCastle_long_captureable1() {
+        $king = new King(
+            new Position(4, 0),
+            Side::WHITE
+        );
+
+        $rook = new Rook(
+            new Position(0, 0),
+            Side::WHITE,
+        );
+
+        $maximumOccupiedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(1, 0),
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+        $maximumCaptureableMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+        $maximumThreatenedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+
+        $this->assertFalse($king->canCastle(
+            $maximumOccupiedMap,
+            $maximumCaptureableMap,
+            $maximumThreatenedMap,
+            $rook,
+        ));
+    }
+
+    public function testCanCastle_long_captureable2() {
+        $king = new King(
+            new Position(4, 0),
+            Side::WHITE
+        );
+
+        $rook = new Rook(
+            new Position(0, 0),
+            Side::WHITE,
+        );
+
+        $maximumOccupiedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(1, 0),
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+        $maximumCaptureableMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(1, 0),
+                new Position(3, 0),
+            ]))->invert());
+        $maximumThreatenedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+
+        $this->assertFalse($king->canCastle(
+            $maximumOccupiedMap,
+            $maximumCaptureableMap,
+            $maximumThreatenedMap,
+            $rook,
+        ));
+    }
+
+    public function testCanCastle_long_captureable3() {
+        $king = new King(
+            new Position(4, 0),
+            Side::WHITE
+        );
+
+        $rook = new Rook(
+            new Position(0, 0),
+            Side::WHITE,
+        );
+
+        $maximumOccupiedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(1, 0),
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+        $maximumCaptureableMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(1, 0),
+                new Position(2, 0),
+            ]))->invert());
+        $maximumThreatenedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+
+        $this->assertFalse($king->canCastle(
+            $maximumOccupiedMap,
+            $maximumCaptureableMap,
+            $maximumThreatenedMap,
+            $rook,
+        ));
+    }
+
+    public function testCanCastle_long_threatened2() {
+        $king = new King(
+            new Position(4, 0),
+            Side::WHITE
+        );
+
+        $rook = new Rook(
+            new Position(0, 0),
+            Side::WHITE,
+        );
+
+        $maximumOccupiedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(1, 0),
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+        $maximumCaptureableMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(1, 0),
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+        $maximumThreatenedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(3, 0),
+            ]))->invert());
+
+        $this->assertFalse($king->canCastle(
+            $maximumOccupiedMap,
+            $maximumCaptureableMap,
+            $maximumThreatenedMap,
+            $rook,
+        ));
+    }
+
+    public function testCanCastle_long_threatened3() {
+        $king = new King(
+            new Position(4, 0),
+            Side::WHITE
+        );
+
+        $rook = new Rook(
+            new Position(0, 0),
+            Side::WHITE,
+        );
+
+        $maximumOccupiedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(1, 0),
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+        $maximumCaptureableMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(1, 0),
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+        $maximumThreatenedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(2, 0),
+            ]))->invert());
+
+        $this->assertFalse($king->canCastle(
+            $maximumOccupiedMap,
+            $maximumCaptureableMap,
+            $maximumThreatenedMap,
+            $rook,
+        ));
+    }
+
+    public function testCanCastle_long_kingMoved() {
+        $king = new King(
+            new Position(4, 0),
+            Side::WHITE,
+            true
+        );
+
+        $rook = new Rook(
+            new Position(0, 0),
+            Side::WHITE,
+        );
+
+        $maximumOccupiedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(1, 0),
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+        $maximumCaptureableMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(1, 0),
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+        $maximumThreatenedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+
+        $this->assertFalse($king->canCastle(
+            $maximumOccupiedMap,
+            $maximumCaptureableMap,
+            $maximumThreatenedMap,
+            $rook,
+        ));
+    }
+
+    public function testCanCastle_long_rookMoved() {
+        $king = new King(
+            new Position(4, 0),
+            Side::WHITE,
+        );
+        $king->move(new Position(4, 0));
+
+        $rook = new Rook(
+            new Position(0, 0),
+            Side::WHITE,
+            true,
+        );
+
+        $maximumOccupiedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(1, 0),
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+        $maximumCaptureableMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(1, 0),
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+        $maximumThreatenedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+
+        $this->assertFalse($king->canCastle(
+            $maximumOccupiedMap,
+            $maximumCaptureableMap,
+            $maximumThreatenedMap,
+            $rook,
+        ));
+    }
 }

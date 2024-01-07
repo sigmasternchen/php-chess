@@ -35,6 +35,10 @@ class FieldBitMap {
         }
     }
 
+    public function invert(): FieldBitMap {
+        return new FieldBitMap(~$this->map);
+    }
+
     public function intersect(FieldBitMap $map): FieldBitMap {
         return new FieldBitMap($this->map & $map->map);
     }

@@ -32,4 +32,31 @@ class King extends Piece {
     public function isInCheck(FieldBitMap $captureable): bool {
         return $captureable->has($this->position);
     }
+
+    public function canCastle(
+        FieldBitMap $occupied,
+        FieldBitMap $captureable,
+        FieldBitMap $threatened,
+        Rook $rook,
+    ): bool {
+        if ($this->position->rank != $rook->position->rank) {
+            return false;
+        }
+        if ($this->hasMoved || $rook->hasMoved) {
+            return false;
+        }
+
+        $increment = $rook->position->file <=> $this->position->file;
+        for ($file = $this->position->file + $increment; $file != $rook->position->file; $file += $increment) {
+            $square = new Position($file, $this->position->rank);
+            if ($occupied->has($square) || $captureable->has($square)) {
+                return false;
+            }
+            if (abs($file - $this->position->file) <= 2 && $threatened->has($square)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
