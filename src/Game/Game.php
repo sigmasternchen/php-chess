@@ -33,7 +33,7 @@ class Game {
     }
 
     public function getPieces(Side $side): array {
-        return array_filter($this->pieces, fn($p) => $p->getSide() == $side);
+        return array_values(array_filter($this->pieces, fn($p) => $p->getSide() == $side));
     }
 
     private function &findPiece(Piece $needle): Piece {
@@ -312,6 +312,46 @@ class Game {
         $this->history->add($this);
     }
 
+    private function isDeadPosition(): bool {
+            $ownPieces = $this->getPieces($this->current);
+            $opponentPieces = $this->getPieces($this->current->getNext());
+
+            $getRemaining = function (array $pieces): Piece {
+                return ($pieces[0] instanceof King ? $pieces[1] : $pieces[0]);
+            };
+
+            if (count($ownPieces) > 2) {
+                return false;
+            } else if (count($opponentPieces) > 2) {
+                return false;
+            } else if (count($ownPieces) == 1 && count($opponentPieces) == 1) {
+                return true;
+            } else if (count($ownPieces) == 1) {
+                $opponentRemaining = $getRemaining($opponentPieces);
+                return !(
+                    $opponentRemaining instanceof Queen ||
+                    $opponentRemaining instanceof Rook ||
+                    $opponentRemaining instanceof Pawn
+                );
+            } else if (count($opponentPieces) == 1) {
+                $ownRemaining = $getRemaining($ownPieces);
+                return !(
+                    $ownRemaining instanceof Queen ||
+                    $ownRemaining instanceof Rook ||
+                    $ownRemaining instanceof Pawn
+                );
+            } else { // both have 1 piece left besides king
+                $ownRemaining = $getRemaining($ownPieces);
+                $opponentRemaining = $getRemaining($opponentPieces);
+
+                return (
+                    $ownRemaining instanceof Bishop &&
+                    $opponentRemaining instanceof Bishop &&
+                    $ownRemaining->getPosition()->getSquareColor() == $opponentRemaining->getPosition()->getSquareColor()
+                );
+            }
+    }
+
     public function getGameState(bool $onlyIsLegal = false): GameState {
         $allOccupied = $this->getAllOccupied();
 
@@ -325,6 +365,10 @@ class Game {
 
         if ($this->history->count($this) >= 3) {
             return GameState::THREEFOLD_REPETITION;
+        }
+
+        if ($this->isDeadPosition()) {
+            return GameState::DEAD_POSITION;
         }
 
         $legalMoves = $this->getLegalMoves();

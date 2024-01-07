@@ -17,6 +17,10 @@ class Position {
             $this->rank >= 0 && $this->rank < 8;
     }
 
+    public function getSquareColor(): Side {
+        return ($this->rank % 2) ^ ($this->file % 2) ? Side::WHITE : Side::BLACK;
+    }
+
     public function __toString(): string {
         return ["a", "b", "c", "d", "e", "f", "g", "h"][$this->file] . ($this->rank + 1);
     }

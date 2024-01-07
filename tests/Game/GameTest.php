@@ -140,6 +140,7 @@ final class GameTest extends TestCase {
             [
                 new King(new Position(1, 1), Side::BLACK, true),
                 new King(new Position(7, 6), Side::WHITE, true),
+                new Pawn(new Position(3, 6), Side::WHITE, true), // to avoid dead position
             ],
             Side::BLACK
         );
@@ -253,6 +254,99 @@ final class GameTest extends TestCase {
             new King(new Position(7, 7), Side::WHITE),
             new Position(7, 6),
         ));
+
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+    }
+
+    public function testGameState_deadPosition_onlyKings() {
+        $subject = new Game(
+            [
+                new King(new Position(0, 7), Side::BLACK),
+                new King(new Position(0, 5), Side::WHITE),
+            ],
+            Side::BLACK
+        );
+
+        $this->assertEquals(GameState::DEAD_POSITION, $subject->getGameState());
+    }
+
+    public function testGameState_deadPosition_kingVsKingAndBishop() {
+        $subject = new Game(
+            [
+                new King(new Position(0, 7), Side::BLACK),
+                new King(new Position(0, 5), Side::WHITE),
+                new Bishop(new Position(1, 0), Side::WHITE),
+            ],
+            Side::BLACK
+        );
+
+        $this->assertEquals(GameState::DEAD_POSITION, $subject->getGameState());
+    }
+
+    public function testGameState_deadPosition_kingVsKingAndKnight() {
+        $subject = new Game(
+            [
+                new King(new Position(0, 7), Side::BLACK),
+                new King(new Position(0, 5), Side::WHITE),
+                new Knight(new Position(1, 0), Side::WHITE),
+            ],
+            Side::BLACK
+        );
+
+        $this->assertEquals(GameState::DEAD_POSITION, $subject->getGameState());
+    }
+
+    public function testGameState_deadPosition_kingAndBishopVsKingAndBishopSameColor() {
+        $subject = new Game(
+            [
+                new King(new Position(0, 7), Side::BLACK),
+                new King(new Position(0, 5), Side::WHITE),
+                new Bishop(new Position(1, 0), Side::WHITE),
+                new Bishop(new Position(2, 1), Side::BLACK),
+            ],
+            Side::BLACK
+        );
+
+        $this->assertEquals(GameState::DEAD_POSITION, $subject->getGameState());
+    }
+
+    public function testGameState_deadPosition_kingAndBishopVsKingAndBishopDifferentColor_notDead() {
+        $subject = new Game(
+            [
+                new King(new Position(0, 7), Side::BLACK),
+                new King(new Position(0, 5), Side::WHITE),
+                new Bishop(new Position(1, 0), Side::WHITE),
+                new Bishop(new Position(1, 1), Side::BLACK),
+            ],
+            Side::BLACK
+        );
+
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+    }
+
+    public function testGameState_deadPosition_kingAndKnightVsKing_notDead() {
+        $subject = new Game(
+            [
+                new King(new Position(0, 7), Side::BLACK),
+                new King(new Position(0, 5), Side::WHITE),
+                new Bishop(new Position(1, 0), Side::WHITE),
+                new Knight(new Position(1, 1), Side::BLACK),
+            ],
+            Side::BLACK
+        );
+
+        $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
+    }
+
+    public function testGameState_deadPosition_kingAndPawnVsKing_notDead() {
+        $subject = new Game(
+            [
+                new King(new Position(0, 7), Side::BLACK),
+                new King(new Position(0, 5), Side::WHITE),
+                new Pawn(new Position(1, 1), Side::BLACK, true),
+            ],
+            Side::BLACK
+        );
 
         $this->assertEquals(GameState::DEFAULT, $subject->getGameState());
     }
