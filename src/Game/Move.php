@@ -7,12 +7,20 @@ class Move {
     public Position $target;
     public ?Piece $captures = null;
     public ?PieceType $promoteTo = null;
+    public ?Piece $castleWith = null;
 
-    public function __construct(Piece $piece, Position $target, ?Piece $captures = null, ?PieceType $promoteTo = null) {
+    public function __construct(
+        Piece $piece,
+        Position $target,
+        ?Piece $captures = null,
+        ?PieceType $promoteTo = null,
+        ?Piece $castleWith = null,
+    ) {
         $this->piece = $piece;
         $this->target = $target;
         $this->captures = $captures;
         $this->promoteTo = $promoteTo;
+        $this->castleWith = $castleWith;
     }
 
     public function equals(Move $move): bool {
@@ -22,7 +30,11 @@ class Move {
                 ($this->captures != null && $move->captures != null && $this->captures->equals($move->captures)) ||
                 ($this->captures == null && $move->captures == null)
             ) &&
-            $this->promoteTo == $move->promoteTo;
+            $this->promoteTo == $move->promoteTo &&
+            (
+                ($this->castleWith != null && $move->castleWith != null && $this->castleWith->equals($move->castleWith)) ||
+                ($this->castleWith == null && $move->castleWith == null)
+            );
     }
 
     public function __toString(): string {

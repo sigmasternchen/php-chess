@@ -400,4 +400,52 @@ final class GameTest extends TestCase {
             new Pawn(new Position(5, 3), Side::WHITE),
         ), $legalMoves);
     }
+
+    public function testLegalMoves_castle() {
+        $subject = new Game(
+            [
+                new King(new Position(0, 7), Side::BLACK),
+                new King(new Position(4, 0), Side::WHITE),
+                new Queen(new Position(2, 1), Side::BLACK),
+                new Rook(new Position(7, 0), Side::WHITE),
+                new Rook(new Position(7, 1), Side::BLACK),
+            ],
+            Side::WHITE
+        );
+
+        $legalMoves = $subject->getLegalMoves();
+
+        echo join("\n", $legalMoves);
+
+        $this->assertCount(5, $legalMoves);
+
+        $this->assertContainsEqualsOnce(new Move(
+            new King(new Position(4, 0), Side::BLACK),
+            new Position(5, 0),
+        ), $legalMoves);
+
+        $this->assertContainsEqualsOnce(new Move(
+            new King(new Position(4, 0), Side::BLACK),
+            new Position(6, 0),
+            null,
+            null,
+            new Rook(new Position(7, 0), Side::WHITE),
+        ), $legalMoves);
+
+        $this->assertContainsEqualsOnce(new Move(
+            new Rook(new Position(7, 0), Side::WHITE),
+            new Position(6, 0),
+        ), $legalMoves);
+
+        $this->assertContainsEqualsOnce(new Move(
+            new Rook(new Position(7, 0), Side::WHITE),
+            new Position(5, 0),
+        ), $legalMoves);
+
+        $this->assertContainsEqualsOnce(new Move(
+            new Rook(new Position(7, 0), Side::WHITE),
+            new Position(7, 1),
+            new Rook(new Position(7, 1), Side::BLACK),
+        ), $legalMoves);
+    }
 }

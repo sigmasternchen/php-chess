@@ -152,7 +152,7 @@ class Game {
 
     private function getCandidateMovesForPiece(
         Piece       $piece,
-        array       $opponentPieces,
+        array       &$opponentPieces,
         FieldBitMap $occupied,
         FieldBitMap $capturableForNonPawn,
         FieldBitMap $captureableForPawn,
@@ -186,6 +186,33 @@ class Game {
         return $futureGame->getGameState(true) != GameState::ILLEGAL;
     }
 
+    private function getCastleMoves(
+        array &$ownPieces,
+        FieldBitMap $occupied,
+        FieldBitMap $capturable,
+        FieldBitMap $threatened
+    ): array {
+        $king = $this->getKing($this->current);
+        return array_values(
+            array_map(
+                fn($r) => new Move(
+                    $king,
+                    new Position(
+                        $king->getPosition()->file + 2 * ($r->getPosition()->file <=> $king->getPosition()->file),
+                        $king->getPosition()->rank,
+                    ),
+                    null,
+                    null,
+                    $r,
+                ),
+                array_filter(
+                    array_filter($ownPieces, fn($p) => $p instanceof Rook),
+                    fn($r) => $king->canCastle($occupied, $capturable, $threatened, $r)
+                )
+            )
+        );
+    }
+
     private function getLegalMovesParameterized(
         array &$ownPieces,
         array &$opponentPieces,
@@ -207,7 +234,17 @@ class Game {
             ));
         }
 
-        return array_values(array_filter($candidates, [$this, "isMoveLegal"]));
+        $candidates = array_values(array_filter($candidates, [$this, "isMoveLegal"]));
+
+        // castle moves should always be legal
+        $candidates = array_merge($candidates, $this->getCastleMoves(
+            $ownPieces,
+            $occupied,
+            $capturableNonPawn,
+            $threatened,
+        ));
+
+        return $candidates;
     }
 
     public function apply(Move $move): Game {
