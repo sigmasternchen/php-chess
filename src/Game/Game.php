@@ -401,10 +401,10 @@ class Game {
             $result .= ($rank + 1) . " ";
 
             for ($file = 0; $file < 8; $file++) {
-                $color = ($rank % 2) ^ ($file % 2);
-                $result .= "\033[" . ($color ? 47 : 100) . "m";
+                $position = new Position($file, $rank);
+                $result .= "\033[" . ($position->getSquareColor() == Side::WHITE ? 47 : 100) . "m";
 
-                $piece = current(array_filter($this->pieces, fn($p) => $p->getPosition()->equals(new Position($file, $rank))));
+                $piece = current(array_filter($this->pieces, fn($p) => $p->getPosition()->equals($position)));
                 if ($piece) {
                     if ($piece->getSide() == Side::WHITE) {
                         $result .= "\033[97m";
