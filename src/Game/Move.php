@@ -37,9 +37,21 @@ class Move {
             );
     }
 
+    public function getLong(): string {
+        if ($this->castleWith) {
+            if (abs($this->piece->getPosition()->file - $this->castleWith->getPosition()->file) > 3) {
+                return "O-O-O";
+            } else {
+                return "O-O";
+            }
+        } else {
+            return $this->piece . " " .
+                $this->piece->getType()->getShort() . ($this->captures ? "x" : "") . $this->target .
+                ($this->promoteTo ? $this->promoteTo->getShort() : "");
+        }
+    }
+
     public function __toString(): string {
-        return $this->piece . " " .
-            $this->piece->getType()->getShort() . ($this->captures ? "x" : "") . $this->target .
-            ($this->promoteTo ? $this->promoteTo->getShort() : "");
+        return $this->getLong();
     }
 }
