@@ -72,7 +72,7 @@ class GameHistory {
             ",",
             array_map(
                 [$this, "getHashForPieces"],
-                [$pawns, $bishops, $knights, $rooks, $queens, $kings]
+                [&$pawns, &$bishops, &$knights, &$rooks, &$queens, &$kings]
             )
         ) . ($this->hasCastlingRights($rooks, $king) ? "." : "");
     }
