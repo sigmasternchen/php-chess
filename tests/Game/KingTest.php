@@ -121,6 +121,7 @@ final class KingTest extends TestCase {
             FieldBitMap::full()->intersect((new FieldBitMap([
                 new Position(2, 0),
                 new Position(3, 0),
+                new Position(4, 0),
             ]))->invert());
 
         $this->assertTrue($king->canCastle(
@@ -142,16 +143,23 @@ final class KingTest extends TestCase {
             Side::WHITE,
         );
 
-        $maximumMap =
+
+        $maximumOccupiedMap =
             FieldBitMap::full()->intersect((new FieldBitMap([
-                new Position(6, 0),
                 new Position(5, 0),
+                new Position(6, 0),
+            ]))->invert());
+        $maximumThreatenedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(4, 0),
+                new Position(5, 0),
+                new Position(6, 0),
             ]))->invert());
 
         $this->assertTrue($king->canCastle(
-            $maximumMap,
-            $maximumMap,
-            $maximumMap,
+            $maximumOccupiedMap,
+            $maximumOccupiedMap,
+            $maximumThreatenedMap,
             $rook,
         ));
     }
@@ -182,6 +190,7 @@ final class KingTest extends TestCase {
             FieldBitMap::full()->intersect((new FieldBitMap([
                 new Position(2, 0),
                 new Position(3, 0),
+                new Position(4, 0),
             ]))->invert());
 
         $this->assertFalse($king->canCastle(
@@ -217,6 +226,7 @@ final class KingTest extends TestCase {
             FieldBitMap::full()->intersect((new FieldBitMap([
                 new Position(2, 0),
                 new Position(3, 0),
+                new Position(4, 0),
             ]))->invert());
 
         $this->assertFalse($king->canCastle(
@@ -253,6 +263,7 @@ final class KingTest extends TestCase {
             FieldBitMap::full()->intersect((new FieldBitMap([
                 new Position(2, 0),
                 new Position(3, 0),
+                new Position(4, 0),
             ]))->invert());
 
         $this->assertFalse($king->canCastle(
@@ -289,6 +300,7 @@ final class KingTest extends TestCase {
             FieldBitMap::full()->intersect((new FieldBitMap([
                 new Position(2, 0),
                 new Position(3, 0),
+                new Position(4, 0),
             ]))->invert());
 
         $this->assertFalse($king->canCastle(
@@ -325,6 +337,7 @@ final class KingTest extends TestCase {
             FieldBitMap::full()->intersect((new FieldBitMap([
                 new Position(2, 0),
                 new Position(3, 0),
+                new Position(4, 0),
             ]))->invert());
 
         $this->assertFalse($king->canCastle(
@@ -361,6 +374,7 @@ final class KingTest extends TestCase {
             FieldBitMap::full()->intersect((new FieldBitMap([
                 new Position(2, 0),
                 new Position(3, 0),
+                new Position(4, 0),
             ]))->invert());
 
         $this->assertFalse($king->canCastle(
@@ -397,6 +411,7 @@ final class KingTest extends TestCase {
         $maximumThreatenedMap =
             FieldBitMap::full()->intersect((new FieldBitMap([
                 new Position(3, 0),
+                new Position(4, 0),
             ]))->invert());
 
         $this->assertFalse($king->canCastle(
@@ -433,6 +448,7 @@ final class KingTest extends TestCase {
         $maximumThreatenedMap =
             FieldBitMap::full()->intersect((new FieldBitMap([
                 new Position(2, 0),
+                new Position(4, 0),
             ]))->invert());
 
         $this->assertFalse($king->canCastle(
@@ -471,6 +487,7 @@ final class KingTest extends TestCase {
             FieldBitMap::full()->intersect((new FieldBitMap([
                 new Position(2, 0),
                 new Position(3, 0),
+                new Position(4, 0),
             ]))->invert());
 
         $this->assertFalse($king->canCastle(
@@ -486,12 +503,49 @@ final class KingTest extends TestCase {
             new Position(4, 0),
             Side::WHITE,
         );
-        $king->move(new Position(4, 0));
 
         $rook = new Rook(
             new Position(0, 0),
             Side::WHITE,
             true,
+        );
+
+        $maximumOccupiedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(1, 0),
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+        $maximumCaptureableMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(1, 0),
+                new Position(2, 0),
+                new Position(3, 0),
+            ]))->invert());
+        $maximumThreatenedMap =
+            FieldBitMap::full()->intersect((new FieldBitMap([
+                new Position(2, 0),
+                new Position(3, 0),
+                new Position(4, 0),
+            ]))->invert());
+
+        $this->assertFalse($king->canCastle(
+            $maximumOccupiedMap,
+            $maximumCaptureableMap,
+            $maximumThreatenedMap,
+            $rook,
+        ));
+    }
+
+    public function testCanCastle_long_kingInCheck() {
+        $king = new King(
+            new Position(4, 0),
+            Side::WHITE,
+        );
+
+        $rook = new Rook(
+            new Position(0, 0),
+            Side::WHITE,
         );
 
         $maximumOccupiedMap =

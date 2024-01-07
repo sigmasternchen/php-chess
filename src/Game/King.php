@@ -45,6 +45,9 @@ class King extends Piece {
         if ($this->hasMoved || $rook->hasMoved) {
             return false;
         }
+        if ($threatened->has($this->position)) {
+            return false;
+        }
 
         $increment = $rook->position->file <=> $this->position->file;
         for ($file = $this->position->file + $increment; $file != $rook->position->file; $file += $increment) {
