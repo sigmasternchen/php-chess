@@ -21,8 +21,16 @@ class Position {
         return ($this->rank % 2) ^ ($this->file % 2) ? Side::WHITE : Side::BLACK;
     }
 
+    public function getFileString(): string {
+        return ["a", "b", "c", "d", "e", "f", "g", "h"][$this->file];
+    }
+
+    public function getRankString(): string {
+        return strval($this->rank + 1);
+    }
+
     public function __toString(): string {
-        return ["a", "b", "c", "d", "e", "f", "g", "h"][$this->file] . ($this->rank + 1);
+        return $this->getFileString() . $this->getRankString();
     }
 
     public function equals(Position $position): bool {

@@ -63,7 +63,7 @@ class Game {
         }
     }
 
-    private function getOccupied(array $pieces): FieldBitMap {
+    public function getOccupied(array $pieces): FieldBitMap {
         $occupiedMap = FieldBitMap::empty();
         foreach ($pieces as $piece) {
             $occupiedMap->add($piece->getPosition());
@@ -76,7 +76,7 @@ class Game {
         return $this->getOccupied($this->pieces);
     }
 
-    private function getCaptureable(array $pieces, bool $forPawn): FieldBitMap {
+    public function getCaptureable(array $pieces, bool $forPawn): FieldBitMap {
         $captureableMap = FieldBitMap::empty();
         foreach ($pieces as $piece) {
             $captureableMap = $captureableMap->union($piece->getCaptureableMap($forPawn));
