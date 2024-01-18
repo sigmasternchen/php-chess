@@ -64,7 +64,6 @@ final class MoveTest extends TestCase {
         $game = new Game([
             new King(new Position(0,0), Side::WHITE),
             new King(new Position(0, 0), Side::BLACK),
-            new Pawn(new Position(3, 3), Side::BLACK, true),
             new Knight(new Position(2, 1), Side::WHITE),
             new Knight(new Position(4, 1), Side::WHITE),
         ], Side::WHITE);
@@ -72,10 +71,9 @@ final class MoveTest extends TestCase {
         $subject = new Move(
             new Knight(new Position(2, 1), Side::WHITE),
             new Position(3, 3),
-            new Pawn(new Position(3, 3), Side::BLACK),
         );
 
-        $this->assertEquals("Ncxd4", $subject->getShort($game));
+        $this->assertEquals("Ncd4", $subject->getShort($game));
     }
 
     public function testShort_fullCollisionAndCheckmate() {
