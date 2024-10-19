@@ -412,6 +412,14 @@ class Game {
         return GameState::DEFAULT;
     }
 
+    public function getPiece(Position $position): Piece|false {
+        return current(array_filter($this->pieces, fn($p) => $p->getPosition()->equals($position)));
+    }
+
+    public function getMovesForPiece(Piece $piece): array {
+        return array_values(array_filter($this->getLegalMoves(), fn($m) => $piece->equals($m->getPiece())));
+    }
+
     public function visualize(): string {
         $result = "  ";
 
@@ -428,7 +436,7 @@ class Game {
                 $position = new Position($file, $rank);
                 $result .= "\033[" . ($position->getSquareColor() == Side::WHITE ? 47 : 100) . "m";
 
-                $piece = current(array_filter($this->pieces, fn($p) => $p->getPosition()->equals($position)));
+                $piece = $this->getPiece($position);
                 if ($piece) {
                     if ($piece->getSide() == Side::WHITE) {
                         $result .= "\033[97m";

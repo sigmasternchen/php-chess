@@ -126,6 +126,10 @@ class Move {
         return $result;
     }
 
+    public function getPiece(): Piece {
+        return $this->piece;
+    }
+
     public function getLong(?Game $game = null): string {
         if ($this->isCastles()) {
             $result = $this->getCastlesMarker();
