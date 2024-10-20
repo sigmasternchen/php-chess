@@ -161,6 +161,16 @@ class Move {
         return $result;
     }
 
+    public function toJS() {
+        return join(",", [
+            $this->piece->toJS(),
+            $this->target,
+            $this->captures ?? "",
+            $this->promoteTo?->getShort() ?? "",
+            $this->castleWith ?? ""
+        ]);
+    }
+
     public function __toString(): string {
         return $this->getLong();
     }

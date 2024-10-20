@@ -7,7 +7,7 @@ use Game\Game;
 $game = Game::fromStartPosition();
 
 $content = function() use ($game) {
-    require '../src/View/fragments/board.php';
+    require '../src/View/fragments/game.php';
 };
 
 require '../src/View/base.php';

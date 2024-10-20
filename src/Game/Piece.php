@@ -47,6 +47,14 @@ abstract class Piece {
         return $this->getType()->getShort() . $this->getPosition();
     }
 
+    public function toJS() {
+        return join("-", [
+            $this->getSide()->getShort(),
+            $this->getType()->getShort(),
+            $this->getPosition()
+        ]);
+    }
+
     private static function getClassForType(PieceType $type): string {
         switch ($type) {
             case PieceType::PAWN:

@@ -13,4 +13,12 @@ enum Side {
             return Side::WHITE;
         }
     }
+
+    public function getShort(): string {
+        if ($this == Side::WHITE) {
+            return "w";
+        } else {
+            return "b";
+        }
+    }
 }
