@@ -29,7 +29,12 @@ function getImageForPice(Piece $piece): string {
 }
 
 ?>
-<div class="board <?= $interactive ? "interactive" : "" ?>" id="board<?= $boardId ?>">
+<div class="board <?= $interactive ? "interactive" : "" ?>" id="board<?= $boardId ?>"
+    data-board="<?= $boardId ?>"
+    <?php if ($interactive) { ?>
+        data-hx-post="/?move" data-hx-trigger="chess-move-<?= $boardId ?> from:body"
+    <?php } ?>
+>
     <?php
         for($rank = $start; $rank != $end; $rank += $dir) {
             for($file = $start; $file != $end; $file += $dir) {

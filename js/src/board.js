@@ -1,25 +1,33 @@
 
 const loadBoard = (board) => {
+    const boardId = board.getAttribute("data-board");
     const getSquare = square => board.getElementsByClassName(square)[0];
+    const moveSelected = event => {
+        const move = event.target.getAttribute("data-move");
+        console.log(move);
+        board.setAttribute("data-hx-vals", JSON.stringify({"move": move}));
+        htmx.trigger(document.body, "chess-move-" + boardId, {});
+    };
     const clearSelection = () => {
         board.classList.remove("moveSelection");
         board.querySelectorAll(".source").forEach(element => {
-            element.classList.remove("source")
+            element.classList.remove("source");
         });
         board.querySelectorAll(".movePossible").forEach(element => {
-            element.classList.remove("movePossible")
+            element.classList.remove("movePossible");
+            element.removeEventListener("click", moveSelected);
         });
     };
     const enterSelection = (moves) => {
         board.classList.add("moveSelection");
         for (const move of moves) {
-            getSquare(move.target).classList.add("movePossible");
+            const target = getSquare(move.target);
+            target.classList.add("movePossible");
+            target.setAttribute("data-move", move.encoded);
+            target.addEventListener("click", moveSelected);
             getSquare(move.source).classList.add("source");
         }
     }
-    const moveSelected = (move) => {
-        // TODO
-    };
 
     board.querySelectorAll(".piece.hasMoves").forEach(element => {
         element.addEventListener("click", event => {
