@@ -3,6 +3,7 @@
 <head>
     <title>test</title>
     <link rel="stylesheet" href="/static/styles.css">
+    <script src="/static/bundle.js"></script>
 </head>
 <body>
     <?php
