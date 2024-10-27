@@ -319,6 +319,7 @@ class Game {
         }
 
         $this->current = $this->current->getNext();
+        $this->moveCache = null;
 
         $this->history->add($this);
     }

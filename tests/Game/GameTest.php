@@ -875,4 +875,25 @@ final class GameTest extends TestCase {
             array_map(fn($p) => $p->getPosition()->file, $kings),
         );
     }
+
+    public function testBug_moveCacheNotClearedOnApplyInPlace() {
+        $subject = new Game(
+            [
+                new King(new Position(0, 7), Side::BLACK),
+                new King(new Position(0, 0), Side::WHITE),
+            ],
+            Side::WHITE
+        );
+
+        $this->assertEquals(Side::WHITE, $subject->getCurrentSide());
+
+        $moves = $subject->getLegalMoves();
+        $this->assertEquals(Side::WHITE, $moves[0]->getPiece()->getSide());
+        $subject->applyInPlace($moves[0]);
+
+        $this->assertEquals(Side::BLACK, $subject->getCurrentSide());
+
+        $moves = $subject->getLegalMoves();
+        $this->assertEquals(Side::BLACK, $moves[0]->getPiece()->getSide());
+    }
 }
