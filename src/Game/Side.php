@@ -21,4 +21,12 @@ enum Side {
             return "b";
         }
     }
+
+    public static function fromShort(string $short): Side {
+        return match ($short) {
+            "w" => self::WHITE,
+            "b" => self::BLACK,
+            default => throw new \InvalidArgumentException("unknown side: " . $short),
+        };
+    }
 }

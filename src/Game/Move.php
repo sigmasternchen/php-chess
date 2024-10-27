@@ -165,10 +165,25 @@ class Move {
         return join(",", [
             $this->piece->toJS(),
             $this->target,
-            $this->captures ?? "",
+            $this->captures?->toJS() ?? "",
             $this->promoteTo?->getShort() ?? "",
-            $this->castleWith ?? ""
+            $this->castleWith?->toJS() ?? ""
         ]);
+    }
+
+    static public function fromJS(string $jsStr): Move {
+        $components = explode(",", $jsStr);
+        if (count($components) != 5) {
+            throw new \InvalidArgumentException("unable to deserialize move string: " . $jsStr);
+        }
+
+        return new Move(
+            Piece::fromJS($components[0]),
+            Position::fromString($components[1]),
+            $components[2] != "" ? Piece::fromJS($components[2]) : null,
+            $components[3] != "" ? PieceType::fromShort($components[3]) : null,
+            $components[4] != "" ? Piece::fromJS($components[4]) : null,
+        );
     }
 
     public function __toString(): string {

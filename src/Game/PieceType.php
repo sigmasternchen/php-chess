@@ -25,6 +25,18 @@ enum PieceType {
         };
     }
 
+    public static function fromShort(string $short): PieceType {
+        return match (strtoupper($short)) {
+            "" => self::PAWN,
+            "B" => self::BISHOP,
+            "N" => self::KNIGHT,
+            "R" => self::ROOK,
+            "Q" => self::QUEEN,
+            "K" => self::KING,
+            default => throw new \InvalidArgumentException("unknown piece type: " . $short)
+        };
+    }
+
     public function getLong(): string {
         return match ($this) {
             self::PAWN => "Pawn",

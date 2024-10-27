@@ -55,6 +55,19 @@ abstract class Piece {
         ]);
     }
 
+    public static function fromJS(string $jsStr): Piece {
+        $components = explode("-", $jsStr);
+        if (count($components) != 3) {
+            throw new \InvalidArgumentException("unable to deserialize piece string: " . $jsStr);
+        }
+
+        return self::ofType(
+            PieceType::fromShort($components[1]),
+            Position::fromString($components[2]),
+            Side::fromShort($components[0]),
+        );
+    }
+
     private static function getClassForType(PieceType $type): string {
         switch ($type) {
             case PieceType::PAWN:

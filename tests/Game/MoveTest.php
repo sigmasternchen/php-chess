@@ -97,4 +97,54 @@ final class MoveTest extends TestCase {
         $this->assertEquals("Nc2xd4++", $subject->getShort($game));
     }
 
+    public function testToJS_capturesAndPromotes() {
+        $move = new Move(
+            new Pawn(new Position(1, 6), Side::WHITE),
+            new Position(2, 7),
+            new Queen(new Position(2, 7), Side::BLACK),
+            PieceType::QUEEN,
+        );
+
+        $this->assertEquals("w--b7,c8,b-Q-c8,Q,", $move->toJS());
+    }
+
+    public function testToJS_minimal() {
+        $move = new Move(
+            new Queen(new Position(1, 6), Side::WHITE),
+            new Position(3, 4)
+        );
+
+        $this->assertEquals("w-Q-b7,d5,,,", $move->toJS());
+    }
+
+    public function testToJS_castle() {
+        $move = new Move(
+            new King(new Position(4, 0), Side::WHITE),
+            new Position(2, 0),
+            null,
+            null,
+            new Rook(new Position(0, 0), Side::WHITE)
+        );
+
+        $this->assertEquals("w-K-e1,c1,,,w-R-a1", $move->toJS());
+    }
+
+    public function testFromJS_capturesAndPromotes() {
+        $move = Move::fromJS("w--b7,c8,b-Q-c8,Q,");
+
+        $this->assertEquals("b7xc8Q", $move->getLong());
+    }
+
+    public function testFromJS_minimal() {
+        $move = Move::fromJS("w-Q-b7,d5,,,");
+
+        $this->assertEquals("Qb7d5", $move->getLong());
+    }
+
+    public function testFromJS_castle() {
+        $move = Move::fromJS("w-K-e1,c1,,,w-R-a1");
+
+        $this->assertEquals("O-O-O", $move->getLong());
+    }
+
 }

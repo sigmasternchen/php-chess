@@ -33,6 +33,18 @@ class Position {
         return $this->getFileString() . $this->getRankString();
     }
 
+    public static function fromString(string $str): Position {
+        $str = strtolower($str);
+        $file = ord($str[0]) - ord("a");
+        $rank = ord($str[1]) - ord("1");
+
+        $position = new Position($file, $rank);
+        if (!$position->isValid()) {
+            throw new \InvalidArgumentException("position is not valid: " . $str);
+        }
+        return $position;
+    }
+
     public function equals(Position $position): bool {
         return $this->file == $position->file && $this->rank == $position->rank;
     }
