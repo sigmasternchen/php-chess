@@ -1,3 +1,4 @@
+import htmx from 'htmx.org';
 
 const loadBoard = (board) => {
     const boardId = board.getAttribute("data-board");
@@ -46,6 +47,18 @@ const loadBoard = (board) => {
     });
 }
 
-export const loadBoards = () => {
-    document.querySelectorAll(".board.interactive").forEach(loadBoard);
-};
+htmx.defineExtension('board', {
+    onEvent : function(name, event) {
+        console.log(name);
+        if (name !== "htmx:afterProcessNode" ||
+            (
+                event?.target?.getAttribute("hx-ext") ??
+                event?.target?.getAttribute("data-hx-ext" ?? "")
+            ) !== "board"
+        ) {
+            return;
+        }
+
+        loadBoard(event.target);
+    }
+})

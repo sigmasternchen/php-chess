@@ -1,8 +1,4 @@
 import htmx from 'htmx.org';
-import {loadBoards} from './board';
+import "./board.ext";
 
 window.htmx = htmx;
-
-window.addEventListener("load", () => {
-    loadBoards();
-});
