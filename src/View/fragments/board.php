@@ -29,14 +29,14 @@ function getImageForPice(Piece $piece): string {
 }
 
 ?>
-<div class="gameinfo">
-    Current Player: <?= $game->getCurrentSide()->name ?><br />
-    Game State: <?= $game->getGameState()->name ?>
-</div>
 <div class="board <?= $interactive ? "interactive" : "" ?>" id="board<?= $boardId ?>"
     data-board="<?= $boardId ?>"
     <?php if ($interactive) { ?>
-        data-hx-ext="board" data-hx-post="/?move" data-hx-trigger="chess-move-<?= $boardId ?> from:body"
+        data-hx-ext="board"
+        data-hx-post="/?move"
+        data-hx-trigger="chess-move-<?= $boardId ?> from:body"
+        data-hx-swap="outerHTML"
+        data-hx-target="this"
     <?php } ?>
 >
     <?php
@@ -47,7 +47,10 @@ function getImageForPice(Piece $piece): string {
                 $moves = $piece ? $game->getMovesForPiece($piece) : [];
                 $hasMoves = count($moves) > 0;
                 ?>
-            <div class="square <?= strtolower($position->getSquareColor()->name) ?> <?= $hasMoves ? "hasMoves" : "" ?> <?= $position ?>">
+            <div
+                class="square <?= strtolower($position->getSquareColor()->name) ?> <?= $hasMoves ? "hasMoves" : "" ?> <?= $position ?>"
+                data-square="<?= $position ?>"
+            >
                 <?php
                     if ($piece) {
                 ?>

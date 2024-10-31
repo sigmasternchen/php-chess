@@ -4,8 +4,7 @@ const loadBoard = (board) => {
     const boardId = board.getAttribute("data-board");
     const getSquare = square => board.getElementsByClassName(square)[0];
     const moveSelected = event => {
-        const move = event.target.getAttribute("data-move");
-        console.log(move);
+        const move = event.currentTarget.getAttribute("data-move");
         board.setAttribute("data-hx-vals", JSON.stringify({"move": move}));
         htmx.trigger(document.body, "chess-move-" + boardId, {});
     };
@@ -49,7 +48,6 @@ const loadBoard = (board) => {
 
 htmx.defineExtension('board', {
     onEvent : function(name, event) {
-        console.log(name);
         if (name !== "htmx:afterProcessNode" ||
             (
                 event?.target?.getAttribute("hx-ext") ??
