@@ -222,7 +222,7 @@ class PeSTO implements Heuristic {
 
         $index = $rank * 8 + $file;
         if ($piece->getSide() == Side::BLACK) {
-            $index = 64 - $index;
+            $index = 63 - $index;
         }
 
         return [
