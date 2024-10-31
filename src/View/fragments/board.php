@@ -41,7 +41,7 @@ function getImageForPice(Piece $piece): string {
 >
     <?php
         for($rank = $start; $rank != $end; $rank += $dir) {
-            for($file = $start; $file != $end; $file += $dir) {
+            for($file = 7-$start; $file != 7-$end; $file -= $dir) {
                 $position = new Position($file, $rank);
                 $piece = $game->getPiece($position);
                 $moves = $piece ? $game->getMovesForPiece($piece) : [];
