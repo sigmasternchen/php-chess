@@ -28,9 +28,6 @@ function getImageForPice(Piece $piece): string {
         $piece->getType()->getShort() .
         ".svg";
 }
-
-echo $interactive;
-
 ?>
 <div class="board <?= $interactive ? "interactive" : "" ?>" id="board<?= $boardId ?>"
     data-board="<?= $boardId ?>"
@@ -48,15 +45,18 @@ echo $interactive;
     <?php } ?>
 >
     <?php
+        $lastMove = $game->getLastMove();
+
         for($rank = $start; $rank != $end; $rank += $dir) {
             for($file = 7-$start; $file != 7-$end; $file -= $dir) {
                 $position = new Position($file, $rank);
                 $piece = $game->getPiece($position);
                 $moves = $piece ? $game->getMovesForPiece($piece) : [];
                 $hasMoves = count($moves) > 0;
+                $isLastMove = $lastMove && ($lastMove->piece->getPosition()->equals($position) || $lastMove->target->equals($position));
                 ?>
             <div
-                class="square <?= strtolower($position->getSquareColor()->name) ?> <?= $hasMoves ? "hasMoves" : "" ?> <?= $position ?>"
+                class="square <?= strtolower($position->getSquareColor()->name) ?> <?= $hasMoves ? "hasMoves" : "" ?> <?= $isLastMove ? "lastMove" : "" ?> <?= $position ?>"
                 data-square="<?= $position ?>"
             >
                 <?php

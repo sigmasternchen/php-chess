@@ -8,6 +8,7 @@ if (gettype(2147483648) == "double") {
 
 class GameHistory {
     private array $counts = [];
+    private array $moves = [];
 
     private function hasCastlingRights(array &$rooks, King $king): bool {
         foreach ($rooks as $rook) {
@@ -102,13 +103,25 @@ class GameHistory {
         }
     }
 
-    public function add(Game $game): void {
+    public function add(Game $game, ?Move $move = null): void {
+        if ($move) {
+            $this->moves[] = $move;
+        }
+
         $hash = $this->getHashForGame($game);
 
         if (array_key_exists($hash, $this->counts)) {
             $this->counts[$hash]++;
         } else {
             $this->counts[$hash] = 1;
+        }
+    }
+
+    public function getLastMove(): Move|null {
+        if (count($this->moves) > 0) {
+            return $this->moves[count($this->moves) - 1];
+        } else {
+            return null;
         }
     }
 }

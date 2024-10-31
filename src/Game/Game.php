@@ -321,7 +321,7 @@ class Game {
         $this->current = $this->current->getNext();
         $this->moveCache = null;
 
-        $this->history->add($this);
+        $this->history->add($this, $move);
     }
 
     private function isDeadPosition(): bool {
@@ -466,6 +466,10 @@ class Game {
         $result .= "\n";
 
         return $result;
+    }
+
+    public function getLastMove(): Move|null {
+        return $this->history->getLastMove();
     }
 
     public static function fromStartPosition(): Game {

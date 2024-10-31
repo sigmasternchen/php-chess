@@ -3,6 +3,7 @@
 require_once '../src/core.php';
 
 use Engine\GameOutcome;
+use Engine\MinimaxAStar;
 use Engine\MinimaxDF;
 use Engine\PeSTO;
 use Engine\PieceValues;
@@ -17,6 +18,7 @@ if (isset($_SESSION["game"])) {
     $engine = $_SESSION["engine"];
 } else {
     $game = Game::fromStartPosition();
+    //$engine = new MinimaxAStar(1.0, new WeightedHeuristics([
     $engine = new MinimaxDF(1, new WeightedHeuristics([
         [new GameOutcome(), 1.0],
         [new PieceValues(), 1.0],

@@ -38,12 +38,20 @@
     transform: translate(-50%, -50%);
 }
 
-.board.interactive:not(.moveSelection) .square.black.hasMoves, .square.black.source {
+.square.white.lastMove {
+    background-color: lightgreen;
+}
+
+.square.black.lastMove {
+    background-color: yellowgreen;
+}
+
+.board.interactive:not(.moveSelection) .square.black.hasMoves .doesnotexist, .square.black.source {
     background-color: green;
 }
 
-.board.interactive:not(.moveSelection) .square.white.hasMoves, .square.white.source {
-    background-color: greenyellow;
+.board.interactive:not(.moveSelection) .square.white.hasMoves .doesnotexist, .square.white.source {
+    background-color: mediumseagreen;
 }
 
 .piece {
