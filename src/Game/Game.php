@@ -46,7 +46,7 @@ class Game {
             }
         }
 
-        throw new \RuntimeException("piece not found: " . $piece);
+        throw new \RuntimeException("piece not found: " . $needle);
     }
 
     private function removePiece(Piece $needle): void {
