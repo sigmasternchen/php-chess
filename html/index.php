@@ -9,9 +9,13 @@ session_start();
 
 if (isset($_SESSION["game"])) {
     $game = $_SESSION["game"];
+    $engine = $_SESSION["engine"];
 } else {
     $game = Game::fromStartPosition();
+    $engine = new \Engine\Random();
+
     $_SESSION["game"] = $game;
+    $_SESSION["engine"] = $engine;
 }
 
 $content = function() use ($game) {
@@ -21,6 +25,9 @@ $content = function() use ($game) {
 if (isset($_GET["move"])) {
     $move = Move::fromJS($_REQUEST["move"]);
     $game->applyInPlace($move);
+
+    $opponentMove = $engine->nextMove($game);
+    $game->applyInPlace($opponentMove);
 
     $content();
 } else {
