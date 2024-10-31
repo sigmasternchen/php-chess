@@ -17,6 +17,7 @@ if (($viewSide ?? Side::WHITE) == Side::WHITE) {
 }
 
 $interactive ??= false;
+$move ??= null;
 
 global $boardId;
 $boardId = ($boardId ?? 0) + 1;
@@ -28,6 +29,8 @@ function getImageForPice(Piece $piece): string {
         ".svg";
 }
 
+echo $interactive;
+
 ?>
 <div class="board <?= $interactive ? "interactive" : "" ?>" id="board<?= $boardId ?>"
     data-board="<?= $boardId ?>"
@@ -37,6 +40,11 @@ function getImageForPice(Piece $piece): string {
         data-hx-trigger="chess-move-<?= $boardId ?> from:body"
         data-hx-swap="outerHTML"
         data-hx-target="this"
+    <?php } else if ($move) { ?>
+        data-hx-post="/?move=<?= $move->toJS() ?>&wait"
+        data-hx-swap="outerHTML"
+        data-hx-target="this"
+        data-hx-trigger="load"
     <?php } ?>
 >
     <?php

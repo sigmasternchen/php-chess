@@ -1,4 +1,2 @@
-import htmx from 'htmx.org';
+import "./htmx";
 import "./board.ext";
-
-window.htmx = htmx;

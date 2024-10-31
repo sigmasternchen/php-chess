@@ -38,11 +38,11 @@
     transform: translate(-50%, -50%);
 }
 
-.board:not(.moveSelection) .square.black.hasMoves, .square.black.source {
+.board.interactive:not(.moveSelection) .square.black.hasMoves, .square.black.source {
     background-color: green;
 }
 
-.board:not(.moveSelection) .square.white.hasMoves, .square.white.source {
+.board.interactive:not(.moveSelection) .square.white.hasMoves, .square.white.source {
     background-color: greenyellow;
 }
 

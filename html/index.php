@@ -27,19 +27,29 @@ if (isset($_SESSION["game"])) {
     $_SESSION["engine"] = $engine;
 }
 
-$content = function() use ($game) {
-    require '../src/View/fragments/game.php';
+$move = null;
+$interactive = true;
+
+$content = function() use ($game, &$move, &$interactive) {
+    require "../src/View/fragments/game.php";
 };
 
 if (isset($_GET["move"])) {
     $move = Move::fromJS($_REQUEST["move"]);
-    $game->applyInPlace($move);
 
-    $opponentMove = $engine->nextMove($game);
-    $game->applyInPlace($opponentMove);
+    if (isset($_GET["wait"])) {
+        $opponentMove = $engine->nextMove($game);
+        $game->applyInPlace($opponentMove);
 
-    $content();
+        $content();
+    } else {
+        $game->applyInPlace($move);
+
+        $interactive = false;
+        $content();
+    }
+
 } else {
-    require '../src/View/base.php';
+    require "../src/View/base.php";
 }
 
