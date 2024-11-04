@@ -31,13 +31,17 @@ const loadBoard = (board) => {
 
     board.querySelectorAll(".piece.hasMoves").forEach(element => {
         element.addEventListener("click", event => {
-            clearSelection();
-            const moves = element.getAttribute("data-moves").split(";").map(move => ({
-                encoded: move,
-                source: move.split(",")[0].split("-")[2],
-                target: move.split(",")[1]
-            }));
-            enterSelection(moves);
+            if (board.classList.contains("moveSelection")) {
+                clearSelection();
+            } else {
+                clearSelection();
+                const moves = element.getAttribute("data-moves").split(";").map(move => ({
+                    encoded: move,
+                    source: move.split(",")[0].split("-")[2],
+                    target: move.split(",")[1]
+                }));
+                enterSelection(moves);
+            }
             event.stopPropagation();
         });
     });
